@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контакты — Blackstone Audit</title>
+<meta name="description" content="Свяжитесь с Blackstone Audit: адрес, телефон, email и форма заявки на консультацию.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Перейти к содержимому</a>
+<header id="site-header"></header>
+
+<main id="main">
+  <section class="hero hero--page">
+    <div class="container">
+      <div class="hero__inner">
+        <nav class="breadcrumbs"><a href="index.html">Главная</a><span>/</span><span>Контакты</span></nav>
+        <span class="eyebrow hero__eyebrow">Контакты</span>
+        <h1>Свяжитесь с нами</h1>
+        <p class="hero__lede">Расскажите о задаче — мы ответим в ближайшее рабочее время и предложим следующий шаг.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        <div>
+          <div class="contact-info-item">
+            <span class="contact-info-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg></span>
+            <div>
+              <h3>Адрес</h3>
+              <p>11 Lashkarbegi street, Tashkent, Uzbekistan</p>
+              <a class="contact-map-link" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=11+Lashkarbegi+street%2C+Tashkent%2C+Uzbekistan">Открыть на карте →</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-info-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c0-.6.4-1 1-1h2.6c.5 0 .9.3 1 .8l.9 3.6c.1.4 0 .9-.4 1.2L7.8 10.9a12.6 12.6 0 0 0 5.3 5.3l1.3-1.3c.3-.3.8-.5 1.2-.4l3.6.9c.5.1.8.5.8 1V19c0 .6-.4 1-1 1h-1.5C9.7 20 4 14.3 4 6.5V5Z"/></svg></span>
+            <div>
+              <h3>Телефон</h3>
+              <p><a href="tel:+998911625024">+998 91 162 50 24</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-info-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="m4.5 6.5 7.5 6 7.5-6"/></svg></span>
+            <div>
+              <h3>Email</h3>
+              <p><a href="mailto:info@blackstone-audit.com">info@blackstone-audit.com</a></p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-info-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+            <div>
+              <h3>Часы работы</h3>
+              <p>Пн–Пт: 9:00–18:00</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-success" data-form-success>Спасибо! Ваша заявка получена. Мы также подготовили письмо в вашей почтовой программе — отправьте его, чтобы точно ничего не потерялось.</div>
+          <form data-contact-form data-locale="ru" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name">Имя *</label>
+                <input type="text" id="name" name="name" required>
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group">
+                <label for="company">Компания</label>
+                <input type="text" id="company" name="company">
+                <span class="form-error"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required>
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone">
+                <span class="form-error"></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="service">Интересующая услуга</label>
+              <select id="service" name="service">
+                <option value="Аудит и подтверждение достоверности">Аудит и подтверждение достоверности</option>
+                <option value="Налоговые услуги">Налоговые услуги</option>
+                <option value="Юридические услуги">Юридические услуги</option>
+                <option value="Бухгалтерский учёт и аутсорсинг">Бухгалтерский учёт и аутсорсинг</option>
+                <option value="Регистрация бизнеса">Регистрация бизнеса</option>
+                <option value="Другое">Другое</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Сообщение *</label>
+              <textarea id="message" name="message" rows="5" required></textarea>
+              <span class="form-error"></span>
+            </div>
+            <button type="submit" class="btn btn--gold btn--block">Отправить заявку</button>
+            <p class="form-note">Отправляя форму, вы соглашаетесь на обработку персональных данных. Либо напишите нам напрямую: <a data-mail-fallback href="mailto:info@blackstone-audit.com">info@blackstone-audit.com</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="site-footer"></footer>
+<script src="assets/js/layout.js"></script>
+<script>BlackstoneLayout.init({locale: 'ru', depth: 0, active: 'contact'});</script>
+<script src="assets/js/contact-form.js"></script>
+</body>
+</html>
