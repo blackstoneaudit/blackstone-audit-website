@@ -267,7 +267,13 @@
 
     var current = window.scrollY;
     var target = window.scrollY;
-    var ease = 0.09;
+    var ease = 0.12;
+    // Caps how far ahead of the current position the target can get.
+    // Without this, continuous scrolling keeps piling distance onto the
+    // target faster than the easing can consume it, so speed keeps
+    // climbing the longer you scroll. Capping the gap makes the speed
+    // plateau at a constant pace almost immediately instead.
+    var maxGap = 200;
     var ticking = false;
 
     function maxScroll() {
@@ -278,6 +284,8 @@
       if (target < 0) target = 0;
       var max = maxScroll();
       if (target > max) target = max;
+      if (target - current > maxGap) target = current + maxGap;
+      if (current - target > maxGap) target = current - maxGap;
     }
 
     function render() {
