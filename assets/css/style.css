@@ -990,3 +990,50 @@ p {
   left: 12px;
   top: 12px;
 }
+
+/* ===== Custom cursor (desktop, motion-enabled only) ===== */
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor input,
+.has-custom-cursor select,
+.has-custom-cursor textarea,
+.has-custom-cursor [role="button"] {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-gold);
+  transition: opacity 200ms ease;
+}
+
+.cursor-dot.is-hover {
+  opacity: 0;
+}
+
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-gold);
+  transition: width 250ms ease, height 250ms ease, background-color 250ms ease, opacity 200ms ease;
+}
+
+.cursor-ring.is-hover {
+  width: 60px;
+  height: 60px;
+  background: rgba(201, 162, 75, 0.14);
+}

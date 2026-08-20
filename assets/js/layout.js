@@ -198,6 +198,121 @@
     );
   }
 
+  function canUseMotion() {
+    var fineHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    return fineHover && !reducedMotion;
+  }
+
+  function initCustomCursor() {
+    if (!canUseMotion()) return;
+
+    document.documentElement.classList.add("has-custom-cursor");
+
+    var dot = document.createElement("div");
+    dot.className = "cursor-dot";
+    var ring = document.createElement("div");
+    ring.className = "cursor-ring";
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+
+    var mouseX = -100;
+    var mouseY = -100;
+    var ringX = -100;
+    var ringY = -100;
+    var visible = false;
+
+    document.addEventListener("mousemove", function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.transform = "translate(" + mouseX + "px," + mouseY + "px) translate(-50%,-50%)";
+      if (!visible) {
+        visible = true;
+        dot.style.opacity = "1";
+        ring.style.opacity = "1";
+      }
+    });
+
+    document.addEventListener("mouseleave", function () {
+      visible = false;
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    });
+
+    function loop() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.transform = "translate(" + ringX + "px," + ringY + "px) translate(-50%,-50%)";
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+
+    var hoverSelector = "a, button, input, select, textarea, [role='button']";
+    document.addEventListener("mouseover", function (e) {
+      if (e.target.closest && e.target.closest(hoverSelector)) {
+        dot.classList.add("is-hover");
+        ring.classList.add("is-hover");
+      }
+    });
+    document.addEventListener("mouseout", function (e) {
+      if (e.target.closest && e.target.closest(hoverSelector)) {
+        dot.classList.remove("is-hover");
+        ring.classList.remove("is-hover");
+      }
+    });
+  }
+
+  function initSmoothScroll() {
+    if (!canUseMotion()) return;
+
+    var current = window.scrollY;
+    var target = window.scrollY;
+    var ease = 0.09;
+    var ticking = false;
+
+    function maxScroll() {
+      return document.documentElement.scrollHeight - window.innerHeight;
+    }
+
+    function clampTarget() {
+      if (target < 0) target = 0;
+      var max = maxScroll();
+      if (target > max) target = max;
+    }
+
+    function render() {
+      current += (target - current) * ease;
+      if (Math.abs(target - current) < 0.5) {
+        current = target;
+        window.scrollTo(0, current);
+        ticking = false;
+        return;
+      }
+      window.scrollTo(0, current);
+      requestAnimationFrame(render);
+    }
+
+    window.addEventListener("wheel", function (e) {
+      target += e.deltaY;
+      clampTarget();
+      e.preventDefault();
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(render);
+      }
+    }, { passive: false });
+
+    // Stay in sync if the user scrolls via keyboard or the scrollbar directly.
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        current = window.scrollY;
+        target = window.scrollY;
+      }
+    }, { passive: true });
+
+    window.addEventListener("resize", clampTarget);
+  }
+
   function initLayout(opts) {
     var locale = opts.locale || "ru";
     var depth = opts.depth || 0;
@@ -233,6 +348,9 @@
         btn.setAttribute("aria-expanded", "false");
       });
     }
+
+    initCustomCursor();
+    initSmoothScroll();
   }
 
   window.BlackstoneLayout = { init: initLayout, icons: ICONS, pages: PAGES, rel: rel };
