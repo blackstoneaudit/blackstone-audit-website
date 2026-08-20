@@ -84,8 +84,6 @@
     }
   };
 
-  var MARK_SVG = '<svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#0a0a0b"/><text x="14" y="46" font-family="&apos;Playfair Display&apos;, Georgia, serif" font-size="34" font-weight="700" fill="#ffffff">B</text><circle cx="47" cy="45" r="4.5" fill="#c9a24b"/></svg>';
-
   var ICONS = {
     phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c0-.6.4-1 1-1h2.6c.5 0 .9.3 1 .8l.9 3.6c.1.4 0 .9-.4 1.2L7.8 10.9a12.6 12.6 0 0 0 5.3 5.3l1.3-1.3c.3-.3.8-.5 1.2-.4l3.6.9c.5.1.8.5.8 1V19c0 .6-.4 1-1 1h-1.5C9.7 20 4 14.3 4 6.5V5Z"/></svg>',
     mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="m4.5 6.5 7.5 6 7.5-6"/></svg>',
@@ -122,7 +120,6 @@
     return (
       '<div class="container header-bar">' +
         '<a class="brand" href="' + prefix + PAGES.home[locale] + '">' +
-          MARK_SVG +
           '<span class="brand__text">' +
             '<span class="brand__name">Blackstone <span>Audit</span></span>' +
             '<span class="brand__tag">' + t.brandTag + "</span>" +
@@ -174,7 +171,7 @@
       '<div class="container">' +
         '<div class="footer-grid">' +
           '<div class="footer-brand">' +
-            '<div class="footer-brand__row">' + MARK_SVG + '<span class="brand__name">Blackstone <span style="color:var(--color-gold)">Audit</span></span></div>' +
+            '<span class="brand__name">Blackstone <span style="color:var(--color-gold)">Audit</span></span>' +
             "<p>" + t.footerAbout + "</p>" +
           "</div>" +
           '<div>' +
