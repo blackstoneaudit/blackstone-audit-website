@@ -262,65 +262,6 @@
     });
   }
 
-  function initSmoothScroll() {
-    if (!canUseMotion()) return;
-
-    var current = window.scrollY;
-    var target = window.scrollY;
-    var ease = 0.12;
-    // Caps how far ahead of the current position the target can get.
-    // Without this, continuous scrolling keeps piling distance onto the
-    // target faster than the easing can consume it, so speed keeps
-    // climbing the longer you scroll. Capping the gap makes the speed
-    // plateau at a constant pace almost immediately instead.
-    var maxGap = 400;
-    var ticking = false;
-
-    function maxScroll() {
-      return document.documentElement.scrollHeight - window.innerHeight;
-    }
-
-    function clampTarget() {
-      if (target < 0) target = 0;
-      var max = maxScroll();
-      if (target > max) target = max;
-      if (target - current > maxGap) target = current + maxGap;
-      if (current - target > maxGap) target = current - maxGap;
-    }
-
-    function render() {
-      current += (target - current) * ease;
-      if (Math.abs(target - current) < 0.5) {
-        current = target;
-        window.scrollTo(0, current);
-        ticking = false;
-        return;
-      }
-      window.scrollTo(0, current);
-      requestAnimationFrame(render);
-    }
-
-    window.addEventListener("wheel", function (e) {
-      target += e.deltaY;
-      clampTarget();
-      e.preventDefault();
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(render);
-      }
-    }, { passive: false });
-
-    // Stay in sync if the user scrolls via keyboard or the scrollbar directly.
-    window.addEventListener("scroll", function () {
-      if (!ticking) {
-        current = window.scrollY;
-        target = window.scrollY;
-      }
-    }, { passive: true });
-
-    window.addEventListener("resize", clampTarget);
-  }
-
   function initLayout(opts) {
     var locale = opts.locale || "ru";
     var depth = opts.depth || 0;
@@ -358,7 +299,6 @@
     }
 
     initCustomCursor();
-    initSmoothScroll();
   }
 
   window.BlackstoneLayout = { init: initLayout, icons: ICONS, pages: PAGES, rel: rel };
