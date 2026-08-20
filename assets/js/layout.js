@@ -4,9 +4,11 @@
   "use strict";
 
   // Root-relative target paths for every page, per locale.
+  // Home/services use clean directory-style paths (no index.html) so the
+  // address bar shows e.g. blackstone-audit.com/ instead of /index.html.
   var PAGES = {
-    home: { ru: "index.html", en: "en/index.html", uz: "uz/index.html" },
-    services: { ru: "services/index.html", en: "en/services/index.html", uz: "uz/services/index.html" },
+    home: { ru: "", en: "en/", uz: "uz/" },
+    services: { ru: "services/", en: "en/services/", uz: "uz/services/" },
     "audit-assurance": { ru: "services/audit-assurance.html", en: "en/services/audit-assurance.html", uz: "uz/services/audit-assurance.html" },
     tax: { ru: "services/tax.html", en: "en/services/tax.html", uz: "uz/services/tax.html" },
     legal: { ru: "services/legal.html", en: "en/services/legal.html", uz: "uz/services/legal.html" },
@@ -95,31 +97,40 @@
     return new Array(depth + 1).join("../");
   }
 
+  // Joins a relative prefix with a target path, falling back to "./"
+  // when both are empty (i.e. linking to the site root from a root page).
+  function linkTo(prefix, target) {
+    if (target === "") {
+      return prefix === "" ? "./" : prefix;
+    }
+    return prefix + target;
+  }
+
   function buildHeader(locale, active, prefix) {
     var t = I18N[locale];
     var servicesLinks = SERVICE_ORDER.map(function (id) {
-      return '<a class="main-nav__dropdown-link" href="' + prefix + PAGES[id][locale] + '">' + t.services[id] + "</a>";
+      return '<a class="main-nav__dropdown-link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
     }).join("");
 
     var servicesActive = SERVICE_ORDER.indexOf(active) !== -1 || active === "services";
 
     var mobileServiceLinks = SERVICE_ORDER.map(function (id) {
-      return '<a class="mobile-nav__link" href="' + prefix + PAGES[id][locale] + '">' + t.services[id] + "</a>";
+      return '<a class="mobile-nav__link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
     }).join("");
 
     var langOptions = ["ru", "en", "uz"].map(function (loc) {
-      var target = PAGES[active] && PAGES[active][loc] ? PAGES[active][loc] : PAGES.home[loc];
-      return '<a class="lang-switch__option' + (loc === locale ? " is-active" : "") + '" href="' + prefix + target + '">' + I18N[loc].langName + "</a>";
+      var target = PAGES[active] && PAGES[active][loc] !== undefined ? PAGES[active][loc] : PAGES.home[loc];
+      return '<a class="lang-switch__option' + (loc === locale ? " is-active" : "") + '" href="' + linkTo(prefix, target) + '">' + I18N[loc].langName + "</a>";
     }).join("");
 
     var mobileLangLinks = ["ru", "en", "uz"].map(function (loc) {
-      var target = PAGES[active] && PAGES[active][loc] ? PAGES[active][loc] : PAGES.home[loc];
-      return '<a class="' + (loc === locale ? "is-active" : "") + '" href="' + prefix + target + '">' + I18N[loc].langName + "</a>";
+      var target = PAGES[active] && PAGES[active][loc] !== undefined ? PAGES[active][loc] : PAGES.home[loc];
+      return '<a class="' + (loc === locale ? "is-active" : "") + '" href="' + linkTo(prefix, target) + '">' + I18N[loc].langName + "</a>";
     }).join("");
 
     return (
       '<div class="container header-bar">' +
-        '<a class="brand" href="' + prefix + PAGES.home[locale] + '">' +
+        '<a class="brand" href="' + linkTo(prefix, PAGES.home[locale]) + '">' +
           '<span class="brand__text">' +
             '<span class="brand__name">Blackstone <span>Audit</span></span>' +
             '<span class="brand__tag">' + t.brandTag + "</span>" +
@@ -127,13 +138,13 @@
         "</a>" +
         '<nav class="main-nav" aria-label="Primary">' +
           '<ul class="main-nav__list">' +
-            '<li><a class="main-nav__link' + (active === "home" ? " is-active" : "") + '" href="' + prefix + PAGES.home[locale] + '">' + t.navHome + "</a></li>" +
+            '<li><a class="main-nav__link' + (active === "home" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.home[locale]) + '">' + t.navHome + "</a></li>" +
             '<li class="main-nav__item">' +
-              '<a class="main-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + prefix + PAGES.services[locale] + '">' + t.navServices + " ▾</a>" +
+              '<a class="main-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + " ▾</a>" +
               '<div class="main-nav__dropdown">' + servicesLinks + "</div>" +
             "</li>" +
-            '<li><a class="main-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + prefix + PAGES.about[locale] + '">' + t.navAbout + "</a></li>" +
-            '<li><a class="main-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + prefix + PAGES.contact[locale] + '">' + t.navContact + "</a></li>" +
+            '<li><a class="main-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a></li>" +
+            '<li><a class="main-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a></li>" +
           "</ul>" +
         "</nav>" +
         '<div class="header-actions">' +
@@ -141,7 +152,7 @@
             '<button class="lang-switch__current" type="button" aria-haspopup="true" aria-expanded="false">' + t.langName + " ▾</button>" +
             '<div class="lang-switch__menu">' + langOptions + "</div>" +
           "</div>" +
-          '<a class="btn btn--gold" href="' + prefix + PAGES.contact[locale] + '">' + t.ctaHeader + "</a>" +
+          '<a class="btn btn--gold" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.ctaHeader + "</a>" +
         "</div>" +
         '<button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" data-menu-toggle>' +
           "<span></span><span></span><span></span>" +
@@ -149,11 +160,11 @@
       "</div>" +
       '<nav class="mobile-nav" data-mobile-nav aria-label="Mobile">' +
         '<div class="mobile-nav__list">' +
-          '<a class="mobile-nav__link' + (active === "home" ? " is-active" : "") + '" href="' + prefix + PAGES.home[locale] + '">' + t.navHome + "</a>" +
-          '<a class="mobile-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + prefix + PAGES.services[locale] + '">' + t.navServices + "</a>" +
+          '<a class="mobile-nav__link' + (active === "home" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.home[locale]) + '">' + t.navHome + "</a>" +
+          '<a class="mobile-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + "</a>" +
           '<div class="mobile-nav__sublist">' + mobileServiceLinks + "</div>" +
-          '<a class="mobile-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + prefix + PAGES.about[locale] + '">' + t.navAbout + "</a>" +
-          '<a class="mobile-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + prefix + PAGES.contact[locale] + '">' + t.navContact + "</a>" +
+          '<a class="mobile-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a>" +
+          '<a class="mobile-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a>" +
         "</div>" +
         '<div class="mobile-nav__langs">' + mobileLangLinks + "</div>" +
       "</nav>"
@@ -164,7 +175,7 @@
     var t = I18N[locale];
     var year = new Date().getFullYear();
     var serviceLinks = SERVICE_ORDER.map(function (id) {
-      return '<li><a href="' + prefix + PAGES[id][locale] + '">' + t.services[id] + "</a></li>";
+      return '<li><a href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a></li>";
     }).join("");
 
     return (
@@ -180,7 +191,7 @@
           "</div>" +
           '<div>' +
             "<h4>" + t.footerCompany + "</h4>" +
-            '<ul><li><a href="' + prefix + PAGES.about[locale] + '">' + t.navAbout + '</a></li><li><a href="' + prefix + PAGES.contact[locale] + '">' + t.navContact + "</a></li></ul>" +
+            '<ul><li><a href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + '</a></li><li><a href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a></li></ul>" +
           "</div>" +
           '<div>' +
             "<h4>" + t.footerContacts + "</h4>" +

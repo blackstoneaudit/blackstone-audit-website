@@ -2,49 +2,49 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>https://blackstone-audit.com/index.html</loc>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/index.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/index.html"/>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/index.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackstone-audit.com/index.html"/>
+    <loc>https://blackstone-audit.com/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackstone-audit.com/"/>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://blackstone-audit.com/en/index.html</loc>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/index.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/index.html"/>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/index.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackstone-audit.com/index.html"/>
+    <loc>https://blackstone-audit.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackstone-audit.com/"/>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://blackstone-audit.com/uz/index.html</loc>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/index.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/index.html"/>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/index.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackstone-audit.com/index.html"/>
+    <loc>https://blackstone-audit.com/uz/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://blackstone-audit.com/"/>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://blackstone-audit.com/services/index.html</loc>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/services/index.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/services/index.html"/>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/services/index.html"/>
+    <loc>https://blackstone-audit.com/services/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/services/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/services/"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/services/"/>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://blackstone-audit.com/en/services/index.html</loc>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/services/index.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/services/index.html"/>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/services/index.html"/>
+    <loc>https://blackstone-audit.com/en/services/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/services/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/services/"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/services/"/>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://blackstone-audit.com/uz/services/index.html</loc>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/services/index.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/services/index.html"/>
-    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/services/index.html"/>
+    <loc>https://blackstone-audit.com/uz/services/</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/services/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/services/"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/services/"/>
     <priority>0.9</priority>
   </url>
 
