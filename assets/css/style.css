@@ -210,7 +210,8 @@ p {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px 0;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 .brand {
@@ -232,7 +233,8 @@ p {
 
 .brand__text {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: baseline;
 }
 
 .brand__name {
@@ -247,11 +249,20 @@ p {
 }
 
 .brand__tag {
-  margin-top: 5px;
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
   font-size: 0.62rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .brand__tag {
+    display: none;
+  }
 }
 
 .main-nav {
