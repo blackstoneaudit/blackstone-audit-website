@@ -273,7 +273,7 @@
     // target faster than the easing can consume it, so speed keeps
     // climbing the longer you scroll. Capping the gap makes the speed
     // plateau at a constant pace almost immediately instead.
-    var maxGap = 200;
+    var maxGap = 400;
     var ticking = false;
 
     function maxScroll() {
