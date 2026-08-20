@@ -159,6 +159,28 @@
   </url>
 
   <url>
+    <loc>https://blackstone-audit.com/resources.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/resources.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/resources.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/resources.html"/>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/en/resources.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/resources.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/resources.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/resources.html"/>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/uz/resources.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/resources.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/resources.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/resources.html"/>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
     <loc>https://blackstone-audit.com/about.html</loc>
     <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/about.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/about.html"/>
