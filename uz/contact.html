@@ -64,7 +64,10 @@
 
         <div class="form-card">
           <div class="form-success" data-form-success>Rahmat! So'rovingiz qabul qilindi. Shuningdek, pochta dasturingizda xat tayyorladik — hech narsa yo'qolmasligi uchun uni yuboring.</div>
-          <form data-contact-form data-locale="uz" novalidate>
+          <form data-contact-form data-locale="uz" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact">
+            <input type="hidden" name="locale" value="uz">
+            <p class="form-hidden-field"><label>Inson bo'lsangiz, bu maydonni bo'sh qoldiring: <input name="bot-field"></label></p>
             <div class="form-row">
               <div class="form-group">
                 <label for="name">Ism *</label>

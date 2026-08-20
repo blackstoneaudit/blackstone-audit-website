@@ -1,4 +1,4 @@
-/* Blackstone Audit — contact form client-side validation (no backend configured yet) */
+/* Blackstone Audit — contact form validation + Netlify Forms submission */
 
 (function () {
   "use strict";
@@ -7,17 +7,20 @@
     ru: {
       required: "Обязательное поле",
       email: "Введите корректный email",
-      success: "Спасибо! Ваша заявка получена. Мы также подготовили письмо в вашей почтовой программе — отправьте его, чтобы точно ничего не потерялось."
+      success: "Спасибо! Ваша заявка отправлена, мы свяжемся с вами в ближайшее время.",
+      error: "Не удалось отправить заявку. Пожалуйста, напишите нам напрямую по ссылке ниже."
     },
     en: {
       required: "This field is required",
       email: "Please enter a valid email address",
-      success: "Thank you! Your request has been captured. We've also prepared an email in your mail client — please send it so nothing gets lost."
+      success: "Thank you! Your request has been sent — we'll be in touch shortly.",
+      error: "Something went wrong sending your request. Please email us directly using the link below."
     },
     uz: {
       required: "Ushbu maydonni to'ldirish shart",
       email: "Yaroqli elektron pochta manzilini kiriting",
-      success: "Rahmat! So'rovingiz qabul qilindi. Shuningdek, pochta dasturingizda xat tayyorladik — hech narsa yo'qolmasligi uchun uni yuboring."
+      success: "Rahmat! So'rovingiz yuborildi, tez orada siz bilan bog'lanamiz.",
+      error: "So'rovni yuborib bo'lmadi. Iltimos, quyidagi havola orqali to'g'ridan-to'g'ri yozing."
     }
   };
 
@@ -28,7 +31,6 @@
     var locale = form.getAttribute("data-locale") || "ru";
     var t = MESSAGES[locale];
     var successBox = document.querySelector("[data-form-success]");
-    var mailBase = "mailto:info@blackstone-audit.com";
 
     function setError(field, message) {
       var wrap = field.closest(".form-group");
@@ -42,14 +44,26 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     }
 
+    function encodeFormData(data) {
+      var params = [];
+      for (var pair of data.entries()) {
+        params.push(encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1]));
+      }
+      return params.join("&");
+    }
+
+    function showMessage(text, isError) {
+      if (!successBox) return;
+      successBox.textContent = text;
+      successBox.classList.toggle("is-error", !!isError);
+      successBox.classList.add("is-visible");
+    }
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var name = form.querySelector("[name='name']");
       var email = form.querySelector("[name='email']");
       var message = form.querySelector("[name='message']");
-      var service = form.querySelector("[name='service']");
-      var phone = form.querySelector("[name='phone']");
-      var company = form.querySelector("[name='company']");
       var valid = true;
 
       [name, email, message].forEach(function (field) {
@@ -68,24 +82,25 @@
 
       if (!valid) return;
 
-      var subject = encodeURIComponent("Website inquiry — " + (service ? service.value : ""));
-      var bodyLines = [
-        "Name: " + name.value,
-        "Company: " + (company ? company.value : ""),
-        "Email: " + email.value,
-        "Phone: " + (phone ? phone.value : ""),
-        "Service of interest: " + (service ? service.value : ""),
-        "",
-        message.value
-      ];
-      var mailtoLink = mailBase + "?subject=" + subject + "&body=" + encodeURIComponent(bodyLines.join("\n"));
+      var submitBtn = form.querySelector("button[type='submit']");
+      if (submitBtn) submitBtn.disabled = true;
 
-      var fallback = document.querySelector("[data-mail-fallback]");
-      if (fallback) fallback.setAttribute("href", mailtoLink);
-
-      if (successBox) successBox.classList.add("is-visible");
-      form.reset();
-      window.location.href = mailtoLink;
+      fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encodeFormData(new FormData(form))
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("Submission failed: " + res.status);
+          showMessage(t.success, false);
+          form.reset();
+        })
+        .catch(function () {
+          showMessage(t.error, true);
+        })
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
     });
   }
 

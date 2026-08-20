@@ -64,7 +64,10 @@
 
         <div class="form-card">
           <div class="form-success" data-form-success>Спасибо! Ваша заявка получена. Мы также подготовили письмо в вашей почтовой программе — отправьте его, чтобы точно ничего не потерялось.</div>
-          <form data-contact-form data-locale="ru" novalidate>
+          <form data-contact-form data-locale="ru" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" novalidate>
+            <input type="hidden" name="form-name" value="contact">
+            <input type="hidden" name="locale" value="ru">
+            <p class="form-hidden-field"><label>Не заполняйте это поле, если вы человек: <input name="bot-field"></label></p>
             <div class="form-row">
               <div class="form-group">
                 <label for="name">Имя *</label>

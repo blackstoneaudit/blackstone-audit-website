@@ -899,8 +899,22 @@ p {
   font-size: 0.92rem;
 }
 
+.form-success.is-error {
+  background: #fbeaea;
+  border-color: #e3b3b3;
+  color: #a13d3d;
+}
+
 .form-success.is-visible {
   display: block;
+}
+
+.form-hidden-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 /* ===== Footer ===== */
