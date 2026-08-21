@@ -579,6 +579,10 @@ p {
 
 .hero {
   position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
   background: var(--color-black);
   color: var(--color-white);
   overflow: hidden;
@@ -607,6 +611,8 @@ p {
 }
 
 .hero--page {
+  min-height: 0;
+  display: block;
   padding: 0;
 }
 
