@@ -480,6 +480,103 @@ p {
 }
 
 /* ===== Hero ===== */
+.hero .container {
+  position: relative;
+}
+
+.footprint {
+  position: absolute;
+  top: 50%;
+  right: -10%;
+  transform: translateY(-50%);
+  width: 82%;
+  max-width: 1040px;
+  aspect-ratio: 1 / 1;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.footprint__map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: invert(1) brightness(0.9);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: footprintFadeIn 1.6s ease forwards 0.2s;
+}
+
+@keyframes footprintFadeIn {
+  to { opacity: 0.55; }
+}
+
+.footprint__marker {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  box-shadow: 0 0 0 0 rgba(201, 162, 75, 0.6);
+  opacity: 0;
+  animation: footprintMarkerIn 0.5s ease forwards var(--delay, 0s), footprintMarkerPulse 2.6s ease-in-out infinite var(--delay, 0s);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.footprint__marker--sm { width: 6px; height: 6px; margin-left: -3px; margin-top: -3px; }
+.footprint__marker--lg { width: 14px; height: 14px; margin-left: -7px; margin-top: -7px; }
+
+@keyframes footprintMarkerIn {
+  from { opacity: 0; transform: scale(0); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes footprintMarkerPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 75, 0.55); }
+  50% { box-shadow: 0 0 0 10px rgba(201, 162, 75, 0); }
+}
+
+.footprint__marker .tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background: var(--color-white);
+  color: var(--color-black);
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+  z-index: 5;
+}
+
+.footprint__marker:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 900px) {
+  .footprint {
+    width: 130%;
+    right: -30%;
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footprint__map { animation: none; opacity: 0.55; }
+  .footprint__marker { animation: none; opacity: 1; }
+}
+
 .hero {
   position: relative;
   background: var(--color-black);
