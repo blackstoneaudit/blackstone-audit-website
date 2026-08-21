@@ -15,6 +15,7 @@
     "accounting-outsourcing": { ru: "services/accounting-outsourcing.html", en: "en/services/accounting-outsourcing.html", uz: "uz/services/accounting-outsourcing.html" },
     "business-registration": { ru: "services/business-registration.html", en: "en/services/business-registration.html", uz: "uz/services/business-registration.html" },
     resources: { ru: "resources.html", en: "en/resources.html", uz: "uz/resources.html" },
+    isa: { ru: "isa-standards.html", en: "en/isa-standards.html", uz: "uz/isa-standards.html" },
     about: { ru: "about.html", en: "en/about.html", uz: "uz/about.html" },
     contact: { ru: "contact.html", en: "en/contact.html", uz: "uz/contact.html" }
   };
@@ -117,6 +118,7 @@
     }).join("");
 
     var servicesActive = SERVICE_ORDER.indexOf(active) !== -1 || active === "services";
+    var resourcesActive = active === "resources" || active === "isa";
 
     var mobileServiceLinks = SERVICE_ORDER.map(function (id) {
       return '<a class="mobile-nav__link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
@@ -147,7 +149,7 @@
               '<a class="main-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + " ▾</a>" +
               '<div class="main-nav__dropdown">' + servicesLinks + "</div>" +
             "</li>" +
-            '<li><a class="main-nav__link' + (active === "resources" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + "</a></li>" +
+            '<li><a class="main-nav__link' + (resourcesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + "</a></li>" +
             '<li><a class="main-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a></li>" +
             '<li><a class="main-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a></li>" +
           "</ul>" +
@@ -168,7 +170,7 @@
           '<a class="mobile-nav__link' + (active === "home" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.home[locale]) + '">' + t.navHome + "</a>" +
           '<a class="mobile-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + "</a>" +
           '<div class="mobile-nav__sublist">' + mobileServiceLinks + "</div>" +
-          '<a class="mobile-nav__link' + (active === "resources" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + "</a>" +
+          '<a class="mobile-nav__link' + (resourcesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + "</a>" +
           '<a class="mobile-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a>" +
           '<a class="mobile-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a>" +
         "</div>" +

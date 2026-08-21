@@ -181,6 +181,28 @@
   </url>
 
   <url>
+    <loc>https://blackstone-audit.com/isa-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/isa-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/isa-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/isa-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/en/isa-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/isa-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/isa-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/isa-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/uz/isa-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/isa-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/isa-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/isa-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
     <loc>https://blackstone-audit.com/about.html</loc>
     <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/about.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/about.html"/>
