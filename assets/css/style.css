@@ -1338,6 +1338,86 @@ a.resource-cell:hover::before {
   .standards-list { grid-template-columns: 1fr; }
 }
 
+/* ===== Double taxation treaties table ===== */
+.dtt-continent {
+  margin-bottom: 44px;
+}
+
+.dtt-continent h2 {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-black);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  border-bottom: 2px solid var(--color-gold);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dtt-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.dtt-table th,
+.dtt-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-gray-100);
+  vertical-align: top;
+}
+
+.dtt-table th {
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-500);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dtt-table td:first-child {
+  font-weight: 700;
+  color: var(--color-black);
+  white-space: nowrap;
+}
+
+.dtt-table tbody tr:hover {
+  background: var(--color-offwhite);
+}
+
+.dtt-link {
+  color: var(--color-gold-dark);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.dtt-link:hover {
+  color: var(--color-black);
+}
+
+.dtt-link--secondary {
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.dtt-empty {
+  color: var(--color-gray-500);
+  font-style: italic;
+}
+
+.dtt-footnote {
+  font-size: 0.78rem;
+  color: var(--color-gray-500);
+  margin-top: 12px;
+}
+
 /* ===== Custom cursor (desktop, motion-enabled only) ===== */
 .has-custom-cursor,
 .has-custom-cursor a,
