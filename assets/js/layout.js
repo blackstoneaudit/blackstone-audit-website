@@ -23,7 +23,22 @@
   };
 
   var SERVICE_ORDER = ["audit-assurance", "tax", "legal", "accounting-outsourcing", "business-registration"];
-  var RESOURCE_ORDER = ["isa", "dtt", "banks"];
+
+  // Every card on the Resources page, in display order. "internal" pages route
+  // through PAGES (locale/prefix-aware); "external" and "placeholder" use the
+  // same href in every locale (placeholder = "#", not yet a real page).
+  var RESOURCE_ITEMS = [
+    { id: "isa", kind: "internal" },
+    { id: "ifrs", kind: "placeholder", href: "#" },
+    { id: "iesba", kind: "external", href: "https://www.ethicsboard.org/iesba-code" },
+    { id: "local-audit", kind: "placeholder", href: "#" },
+    { id: "local-accounting", kind: "placeholder", href: "#" },
+    { id: "tax-code", kind: "external", href: "https://lex.uz/docs/-4674902" },
+    { id: "labor-code", kind: "external", href: "https://lex.uz/ru/docs/-6257288" },
+    { id: "dtt", kind: "internal" },
+    { id: "banks", kind: "internal" }
+  ];
+  var RESOURCE_ORDER = RESOURCE_ITEMS.map(function (item) { return item.id; });
 
   var I18N = {
     ru: {
@@ -42,6 +57,12 @@
       },
       resourceItems: {
         isa: "Международные стандарты аудита (ISA)",
+        ifrs: "Международные стандарты финансовой отчётности (МСФО)",
+        iesba: "Кодекс этики IESBA",
+        "local-audit": "Местные нормативные документы по аудиту",
+        "local-accounting": "Местные нормативные документы по бухучёту",
+        "tax-code": "Налоговый кодекс РУз",
+        "labor-code": "Трудовой кодекс РУз",
         dtt: "Соглашения об избежании двойного налогообложения",
         banks: "Банки Узбекистана"
       },
@@ -69,6 +90,12 @@
       },
       resourceItems: {
         isa: "International Standards on Auditing (ISA)",
+        ifrs: "International Financial Reporting Standards (IFRS)",
+        iesba: "IESBA Code of Ethics",
+        "local-audit": "Local Auditing Regulatory Documents",
+        "local-accounting": "Local Accounting Regulatory Documents",
+        "tax-code": "Tax Code of Uzbekistan",
+        "labor-code": "Labor Code of Uzbekistan",
         dtt: "Double Taxation Treaties",
         banks: "Banks of Uzbekistan"
       },
@@ -96,6 +123,12 @@
       },
       resourceItems: {
         isa: "Xalqaro audit standartlari (ISA)",
+        ifrs: "Xalqaro moliyaviy hisobot standartlari (XMHS)",
+        iesba: "IESBA Odob-axloq kodeksi",
+        "local-audit": "Mahalliy audit normativ hujjatlari",
+        "local-accounting": "Mahalliy buxgalteriya normativ hujjatlari",
+        "tax-code": "O'zR Soliq kodeksi",
+        "labor-code": "O'zR Mehnat kodeksi",
         dtt: "Ikki yoqlama soliqqa tortish bitimlari",
         banks: "O'zbekiston banklari"
       },
@@ -129,14 +162,24 @@
     return prefix + target;
   }
 
+  // A resource item's href is either an internal, locale/prefix-aware PAGES
+  // entry, or a literal external/placeholder URL that's the same in every locale.
+  function resourceHref(item, locale, prefix) {
+    return item.kind === "internal" ? linkTo(prefix, PAGES[item.id][locale]) : item.href;
+  }
+
+  function resourceExtraAttrs(item) {
+    return item.kind === "external" ? ' target="_blank" rel="noopener"' : "";
+  }
+
   function buildHeader(locale, active, prefix) {
     var t = I18N[locale];
     var servicesLinks = SERVICE_ORDER.map(function (id) {
       return '<a class="main-nav__dropdown-link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
     }).join("");
 
-    var resourcesLinks = RESOURCE_ORDER.map(function (id) {
-      return '<a class="main-nav__dropdown-link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.resourceItems[id] + "</a>";
+    var resourcesLinks = RESOURCE_ITEMS.map(function (item) {
+      return '<a class="main-nav__dropdown-link" href="' + resourceHref(item, locale, prefix) + '"' + resourceExtraAttrs(item) + '>' + t.resourceItems[item.id] + "</a>";
     }).join("");
 
     var servicesActive = SERVICE_ORDER.indexOf(active) !== -1 || active === "services";
@@ -146,8 +189,8 @@
       return '<a class="mobile-nav__link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
     }).join("");
 
-    var mobileResourceLinks = RESOURCE_ORDER.map(function (id) {
-      return '<a class="mobile-nav__link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.resourceItems[id] + "</a>";
+    var mobileResourceLinks = RESOURCE_ITEMS.map(function (item) {
+      return '<a class="mobile-nav__link" href="' + resourceHref(item, locale, prefix) + '"' + resourceExtraAttrs(item) + '>' + t.resourceItems[item.id] + "</a>";
     }).join("");
 
     var langOptions = ["ru", "en", "uz"].map(function (loc) {
