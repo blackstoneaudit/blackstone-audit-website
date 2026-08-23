@@ -1401,6 +1401,13 @@ a.resource-cell:hover::before {
   flex: none;
 }
 
+.dtt-cell__flag svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  display: block;
+  color: var(--color-gold-dark);
+}
+
 .resource-cell--dtt h3 {
   font-size: 0.98rem;
 }

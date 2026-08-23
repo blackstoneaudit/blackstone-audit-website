@@ -16,11 +16,14 @@
     "business-registration": { ru: "services/business-registration.html", en: "en/services/business-registration.html", uz: "uz/services/business-registration.html" },
     resources: { ru: "resources.html", en: "en/resources.html", uz: "uz/resources.html" },
     isa: { ru: "isa-standards.html", en: "en/isa-standards.html", uz: "uz/isa-standards.html" },
+    dtt: { ru: "double-taxation-treaties.html", en: "en/double-taxation-treaties.html", uz: "uz/double-taxation-treaties.html" },
+    banks: { ru: "banks.html", en: "en/banks.html", uz: "uz/banks.html" },
     about: { ru: "about.html", en: "en/about.html", uz: "uz/about.html" },
     contact: { ru: "contact.html", en: "en/contact.html", uz: "uz/contact.html" }
   };
 
   var SERVICE_ORDER = ["audit-assurance", "tax", "legal", "accounting-outsourcing", "business-registration"];
+  var RESOURCE_ORDER = ["isa", "dtt", "banks"];
 
   var I18N = {
     ru: {
@@ -36,6 +39,11 @@
         legal: "Юридические услуги",
         "accounting-outsourcing": "Бухгалтерский учёт и аутсорсинг",
         "business-registration": "Регистрация бизнеса"
+      },
+      resourceItems: {
+        isa: "Международные стандарты аудита (ISA)",
+        dtt: "Соглашения об избежании двойного налогообложения",
+        banks: "Банки Узбекистана"
       },
       ctaHeader: "Заказать консультацию",
       footerAbout: "Blackstone Audit — команда аудиторов, налоговых и юридических консультантов, которая помогает бизнесу в Узбекистане и Центральной Азии работать прозрачно и уверенно.",
@@ -59,6 +67,11 @@
         "accounting-outsourcing": "Accounting & Outsourcing",
         "business-registration": "Business Registration"
       },
+      resourceItems: {
+        isa: "International Standards on Auditing (ISA)",
+        dtt: "Double Taxation Treaties",
+        banks: "Banks of Uzbekistan"
+      },
       ctaHeader: "Request a Consultation",
       footerAbout: "Blackstone Audit is a team of audit, tax and legal advisors helping businesses in Uzbekistan and Central Asia operate transparently and with confidence.",
       footerServices: "Services",
@@ -80,6 +93,11 @@
         legal: "Yuridik xizmatlar",
         "accounting-outsourcing": "Buxgalteriya va autsorsing",
         "business-registration": "Biznesni ro'yxatdan o'tkazish"
+      },
+      resourceItems: {
+        isa: "Xalqaro audit standartlari (ISA)",
+        dtt: "Ikki yoqlama soliqqa tortish bitimlari",
+        banks: "O'zbekiston banklari"
       },
       ctaHeader: "Konsultatsiya buyurtma qilish",
       footerAbout: "Blackstone Audit — O'zbekiston va Markaziy Osiyo biznesiga shaffof va ishonchli ishlashda yordam beruvchi audit, soliq va yuridik maslahatchilar jamoasi.",
@@ -117,11 +135,19 @@
       return '<a class="main-nav__dropdown-link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
     }).join("");
 
+    var resourcesLinks = RESOURCE_ORDER.map(function (id) {
+      return '<a class="main-nav__dropdown-link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.resourceItems[id] + "</a>";
+    }).join("");
+
     var servicesActive = SERVICE_ORDER.indexOf(active) !== -1 || active === "services";
-    var resourcesActive = active === "resources" || active === "isa";
+    var resourcesActive = RESOURCE_ORDER.indexOf(active) !== -1 || active === "resources";
 
     var mobileServiceLinks = SERVICE_ORDER.map(function (id) {
       return '<a class="mobile-nav__link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
+    }).join("");
+
+    var mobileResourceLinks = RESOURCE_ORDER.map(function (id) {
+      return '<a class="mobile-nav__link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.resourceItems[id] + "</a>";
     }).join("");
 
     var langOptions = ["ru", "en", "uz"].map(function (loc) {
@@ -149,7 +175,10 @@
               '<a class="main-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + " ▾</a>" +
               '<div class="main-nav__dropdown">' + servicesLinks + "</div>" +
             "</li>" +
-            '<li><a class="main-nav__link' + (resourcesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + "</a></li>" +
+            '<li class="main-nav__item">' +
+              '<a class="main-nav__link' + (resourcesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + " ▾</a>" +
+              '<div class="main-nav__dropdown">' + resourcesLinks + "</div>" +
+            "</li>" +
             '<li><a class="main-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a></li>" +
             '<li><a class="main-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a></li>" +
           "</ul>" +
@@ -171,6 +200,7 @@
           '<a class="mobile-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + "</a>" +
           '<div class="mobile-nav__sublist">' + mobileServiceLinks + "</div>" +
           '<a class="mobile-nav__link' + (resourcesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + "</a>" +
+          '<div class="mobile-nav__sublist">' + mobileResourceLinks + "</div>" +
           '<a class="mobile-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a>" +
           '<a class="mobile-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a>" +
         "</div>" +
