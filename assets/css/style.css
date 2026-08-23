@@ -1379,82 +1379,88 @@ a.resource-cell:hover::before {
   .standards-list { grid-template-columns: 1fr; }
 }
 
-/* ===== Double taxation treaties grid (country cards, resources-page style) ===== */
-.dtt-continent {
-  margin-bottom: 40px;
+/* ===== Statement table (DTT, Banks — formal register style) ===== */
+.statement-section {
+  margin-bottom: 48px;
 }
 
-.resource-cell--dtt {
-  padding: 24px 26px;
-  gap: 12px;
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.dtt-cell__head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.statement-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.dtt-cell__flag {
-  font-size: 1.5rem;
-  line-height: 1;
-  flex: none;
-}
-
-.dtt-cell__flag svg {
-  width: 1.4rem;
-  height: 1.4rem;
-  display: block;
-  color: var(--color-gold-dark);
-}
-
-.resource-cell--dtt h3 {
-  font-size: 0.98rem;
-}
-
-.dtt-cell__links {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.dtt-cell__row {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 0.82rem;
-}
-
-.dtt-cell__label {
-  color: var(--color-gray-500);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.dtt-cell__value {
-  color: var(--color-gold-dark);
+.statement-table .region-row th {
+  text-align: left;
+  padding: 0 0 10px;
+  font-family: var(--font-heading);
   font-weight: 700;
+  font-size: 1.02rem;
+  border-bottom: 1px solid var(--color-black);
+}
+
+.statement-table thead.cols th {
+  text-align: left;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+  font-weight: 600;
+  padding: 14px 0 10px;
+  border-bottom: 1px solid var(--color-gray-300);
+}
+
+.statement-table thead.cols th:not(:first-child) {
+  padding-left: 28px;
+}
+
+.statement-table tbody td {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--color-gray-100);
+  vertical-align: top;
+}
+
+.statement-table tbody td:not(:first-child) {
+  padding-left: 28px;
+}
+
+.statement-table tbody tr:last-child td {
+  border-bottom: 1px solid var(--color-black);
+}
+
+.statement-table .country {
+  font-weight: 600;
   white-space: nowrap;
 }
 
-.dtt-cell__value:hover {
+.statement-table a {
   color: var(--color-black);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-gray-300);
 }
 
-.dtt-cell__value--secondary {
-  margin-left: 6px;
-  font-weight: 500;
-  opacity: 0.75;
+.statement-table a:hover {
+  color: var(--color-gold-dark);
+  border-color: var(--color-gold-dark);
 }
 
-.dtt-cell__empty {
+.statement-table .statement-secondary {
+  color: var(--color-gray-500);
+  font-weight: 400;
+}
+
+.statement-table .na {
   color: var(--color-gray-300);
-  font-style: italic;
-  white-space: nowrap;
 }
 
-.dtt-footnote {
+.statement-footnote {
   font-size: 0.78rem;
   color: var(--color-gray-500);
   margin-top: 12px;
