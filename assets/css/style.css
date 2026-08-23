@@ -1338,78 +1338,72 @@ a.resource-cell:hover::before {
   .standards-list { grid-template-columns: 1fr; }
 }
 
-/* ===== Double taxation treaties table ===== */
+/* ===== Double taxation treaties grid (country cards, resources-page style) ===== */
 .dtt-continent {
-  margin-bottom: 44px;
+  margin-bottom: 40px;
 }
 
-.dtt-continent h2 {
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-black);
-  padding-bottom: 12px;
-  margin-bottom: 18px;
-  border-bottom: 2px solid var(--color-gold);
+.resource-cell--dtt {
+  padding: 24px 26px;
+  gap: 12px;
 }
 
-.table-scroll {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+.dtt-cell__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.dtt-table {
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
-  font-size: 0.9rem;
+.dtt-cell__flag {
+  font-size: 1.5rem;
+  line-height: 1;
+  flex: none;
 }
 
-.dtt-table th,
-.dtt-table td {
-  padding: 12px 14px;
-  text-align: left;
-  border-bottom: 1px solid var(--color-gray-100);
-  vertical-align: top;
+.resource-cell--dtt h3 {
+  font-size: 0.98rem;
 }
 
-.dtt-table th {
-  font-size: 0.76rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.dtt-cell__links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dtt-cell__row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.82rem;
+}
+
+.dtt-cell__label {
   color: var(--color-gray-500);
-  font-weight: 700;
-  white-space: nowrap;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.dtt-table td:first-child {
-  font-weight: 700;
-  color: var(--color-black);
-  white-space: nowrap;
-}
-
-.dtt-table tbody tr:hover {
-  background: var(--color-offwhite);
-}
-
-.dtt-link {
+.dtt-cell__value {
   color: var(--color-gold-dark);
   font-weight: 700;
   white-space: nowrap;
 }
 
-.dtt-link:hover {
+.dtt-cell__value:hover {
   color: var(--color-black);
 }
 
-.dtt-link--secondary {
+.dtt-cell__value--secondary {
+  margin-left: 6px;
   font-weight: 500;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
-.dtt-empty {
-  color: var(--color-gray-500);
+.dtt-cell__empty {
+  color: var(--color-gray-300);
   font-style: italic;
+  white-space: nowrap;
 }
 
 .dtt-footnote {
