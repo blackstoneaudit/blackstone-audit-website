@@ -872,6 +872,47 @@ p {
   margin: 0;
 }
 
+/* ===== Industries grid (About page) ===== */
+.industry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 980px) {
+  .industry-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .industry-grid { grid-template-columns: 1fr; }
+}
+
+.industry-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px 22px;
+  background: var(--color-offwhite);
+  border-radius: var(--radius);
+  border-top: 3px solid var(--color-gold);
+}
+
+.industry-card__icon {
+  width: 30px;
+  height: 30px;
+  color: var(--color-gold-dark);
+}
+
+.industry-card__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.industry-card h3 {
+  font-size: 0.98rem;
+  margin: 0;
+}
+
 /* ===== Contact ===== */
 .contact-grid {
   display: grid;
