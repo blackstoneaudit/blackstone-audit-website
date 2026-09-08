@@ -18,7 +18,7 @@
     isa: { ru: "isa-standards.html", en: "en/isa-standards.html", uz: "uz/isa-standards.html" },
     dtt: { ru: "double-taxation-treaties.html", en: "en/double-taxation-treaties.html", uz: "uz/double-taxation-treaties.html" },
     "local-audit": { ru: "local-audit-standards.html", en: "local-audit-standards.html", uz: "local-audit-standards.html" },
-    ifrs: { ru: "ifrs-standards.html", en: "ifrs-standards.html", uz: "ifrs-standards.html" },
+    ifrs: { ru: "ifrs-standards.html", en: "en/ifrs-standards.html", uz: "uz/ifrs-standards.html" },
     banks: { ru: "banks.html", en: "en/banks.html", uz: "uz/banks.html" },
     about: { ru: "about.html", en: "en/about.html", uz: "uz/about.html" },
     contact: { ru: "contact.html", en: "en/contact.html", uz: "uz/contact.html" }
