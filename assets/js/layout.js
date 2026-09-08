@@ -18,6 +18,7 @@
     isa: { ru: "isa-standards.html", en: "en/isa-standards.html", uz: "uz/isa-standards.html" },
     dtt: { ru: "double-taxation-treaties.html", en: "en/double-taxation-treaties.html", uz: "uz/double-taxation-treaties.html" },
     "local-audit": { ru: "local-audit-standards.html", en: "local-audit-standards.html", uz: "local-audit-standards.html" },
+    ifrs: { ru: "ifrs-standards.html", en: "ifrs-standards.html", uz: "ifrs-standards.html" },
     banks: { ru: "banks.html", en: "en/banks.html", uz: "uz/banks.html" },
     about: { ru: "about.html", en: "en/about.html", uz: "uz/about.html" },
     contact: { ru: "contact.html", en: "en/contact.html", uz: "uz/contact.html" }
@@ -30,7 +31,7 @@
   // same href in every locale (placeholder = "#", not yet a real page).
   var RESOURCE_ITEMS = [
     { id: "isa", kind: "internal" },
-    { id: "ifrs", kind: "placeholder", href: "#" },
+    { id: "ifrs", kind: "internal" },
     { id: "iesba", kind: "external", href: "https://www.ethicsboard.org/iesba-code" },
     { id: "local-audit", kind: "internal" },
     { id: "local-accounting", kind: "placeholder", href: "#" },
