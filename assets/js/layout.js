@@ -17,6 +17,7 @@
     resources: { ru: "resources.html", en: "en/resources.html", uz: "uz/resources.html" },
     isa: { ru: "isa-standards.html", en: "en/isa-standards.html", uz: "uz/isa-standards.html" },
     dtt: { ru: "double-taxation-treaties.html", en: "en/double-taxation-treaties.html", uz: "uz/double-taxation-treaties.html" },
+    "local-audit": { ru: "local-audit-standards.html", en: "local-audit-standards.html", uz: "local-audit-standards.html" },
     banks: { ru: "banks.html", en: "en/banks.html", uz: "uz/banks.html" },
     about: { ru: "about.html", en: "en/about.html", uz: "uz/about.html" },
     contact: { ru: "contact.html", en: "en/contact.html", uz: "uz/contact.html" }
@@ -31,7 +32,7 @@
     { id: "isa", kind: "internal" },
     { id: "ifrs", kind: "placeholder", href: "#" },
     { id: "iesba", kind: "external", href: "https://www.ethicsboard.org/iesba-code" },
-    { id: "local-audit", kind: "placeholder", href: "#" },
+    { id: "local-audit", kind: "internal" },
     { id: "local-accounting", kind: "placeholder", href: "#" },
     { id: "tax-code", kind: "external", href: "https://lex.uz/docs/-4674902" },
     { id: "labor-code", kind: "external", href: "https://lex.uz/ru/docs/-6257288" },

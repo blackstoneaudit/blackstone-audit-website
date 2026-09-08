@@ -1458,6 +1458,29 @@ a.resource-cell:hover::before {
   color: var(--color-gold-dark);
 }
 
+/* Non-clickable row — a topic/chapter label with no standalone source, not a broken link */
+.standard-link--static {
+  cursor: default;
+}
+
+.standard-link--static:hover {
+  color: inherit;
+  padding-left: 4px;
+}
+
+.standard-link--static .standard-link__num {
+  color: var(--color-gray-300);
+}
+
+.standard-link--static:hover .standard-link__num,
+.standard-link--static:hover .standard-link__title {
+  color: var(--color-gray-300);
+}
+
+.standard-link--static .standard-link__title {
+  color: var(--color-gray-500);
+}
+
 @media (max-width: 700px) {
   .standards-list { grid-template-columns: 1fr; }
 }
