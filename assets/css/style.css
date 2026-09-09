@@ -781,6 +781,16 @@ p {
   max-width: 760px;
 }
 
+.hero:not(.hero--page) h1 {
+  font-size: clamp(3rem, 6.4vw, 5.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+}
+
+.hero:not(.hero--page) .hero__inner {
+  max-width: 900px;
+}
+
 .hero--page {
   min-height: 0;
   display: block;
