@@ -409,6 +409,247 @@
     });
   }
 
+  // ===== Scroll-reveal animation system =====
+  // Lightweight, dependency-free entrance animations: elements fade + slide
+  // in once as they cross into the viewport. Targets are declared once, by
+  // CSS selector, below — nothing per-page or per-component to wire up.
+  //
+  // State is applied via inline styles (not classes) so it never fights the
+  // transition a component already defines for its own hover state (e.g.
+  // .service-card's box-shadow/transform hover transition): the reveal's
+  // inline transition/transform/opacity are removed the moment the entrance
+  // finishes, handing the element back to its normal stylesheet rules.
+  //
+  // Everything here is inert with JS disabled (elements simply stay at
+  // their default opacity: 1) and inert under prefers-reduced-motion.
+
+  var REVEAL_DURATION = 800; // ms — mid-point of the 700-900ms premium range
+  var REVEAL_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+  var revealObserver = null;
+
+  function prefersReducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function isMobileViewport() {
+    return window.matchMedia("(max-width: 700px)").matches;
+  }
+
+  // Sets an element's hidden starting state + transition, and returns a
+  // function that flips it to visible. Cleans its own inline styles up
+  // after the transition ends so hover/etc. states are unaffected afterward.
+  function armReveal(el, kind, delayMs) {
+    var dist = isMobileViewport() ? 20 : 40;
+    var from, to;
+    if (kind === "card") {
+      from = "translateY(" + dist + "px) scale(0.98)";
+      to = "translateY(0) scale(1)";
+    } else if (kind === "image") {
+      from = "translateY(" + Math.round(dist * 0.6) + "px) scale(1.03)";
+      to = "translateY(0) scale(1)";
+    } else {
+      from = "translateY(" + dist + "px)";
+      to = "translateY(0)";
+    }
+
+    var delay = delayMs ? delayMs + "ms" : "0ms";
+    el.style.opacity = "0";
+    el.style.transform = from;
+    el.style.willChange = "opacity, transform";
+    el.style.transition =
+      "opacity " + REVEAL_DURATION + "ms " + REVEAL_EASE + " " + delay + ", " +
+      "transform " + REVEAL_DURATION + "ms " + REVEAL_EASE + " " + delay;
+
+    var settled = false;
+    function settle() {
+      if (settled) return;
+      settled = true;
+      el.style.opacity = "";
+      el.style.transform = "";
+      el.style.transition = "";
+      el.style.willChange = "";
+    }
+    el.addEventListener("transitionend", settle, { once: true });
+    window.setTimeout(settle, REVEAL_DURATION + (delayMs || 0) + 400);
+
+    return function reveal() {
+      el.style.opacity = "1";
+      el.style.transform = to;
+    };
+  }
+
+  function observeReveal(el, kind, delayMs) {
+    var reveal = armReveal(el, kind, delayMs);
+    if (!revealObserver) {
+      revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var fn = entry.target.__blackstoneReveal;
+          if (fn) fn();
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.2 });
+    }
+    el.__blackstoneReveal = reveal;
+    revealObserver.observe(el);
+  }
+
+  // Reveals every match of `selector` inside `container`, staggered by
+  // `staggerMs`. The stagger index is capped at `maxIndex` so long lists
+  // (e.g. a 10-item resources grid) don't push the last item's delay out
+  // to an absurd length.
+  function staggerGroup(container, selector, kind, staggerMs, maxIndex) {
+    var items = container.querySelectorAll(selector);
+    items.forEach(function (el, i) {
+      observeReveal(el, kind, Math.min(i, maxIndex || 5) * staggerMs);
+    });
+  }
+
+  function initScrollReveal() {
+    if (prefersReducedMotion() || !("IntersectionObserver" in window)) return;
+
+    // Section intros: eyebrow -> heading -> supporting text, cascading.
+    document.querySelectorAll(".section-head").forEach(function (head) {
+      [head.querySelector(".eyebrow"), head.querySelector("h2"), head.querySelector(".lede, p")]
+        .filter(Boolean)
+        .forEach(function (el, i) { observeReveal(el, "text", i * 110); });
+    });
+
+    // Resources page's label + title above the grid.
+    document.querySelectorAll(".grid-header").forEach(function (head) {
+      [head.querySelector(".grid-header__label"), head.querySelector(".grid-header__title")]
+        .filter(Boolean)
+        .forEach(function (el, i) { observeReveal(el, "text", i * 110); });
+    });
+
+    // Two-column intro/detail layout (About page "Our approach", etc.).
+    document.querySelectorAll(".split").forEach(function (split) {
+      var cols = split.querySelectorAll(":scope > div");
+      cols.forEach(function (col, i) { observeReveal(col, "text", i * 150); });
+    });
+
+    // Card grids.
+    document.querySelectorAll(".service-grid").forEach(function (g) { staggerGroup(g, ".service-card", "card", 130); });
+    document.querySelectorAll(".value-grid").forEach(function (g) { staggerGroup(g, ".value-card", "card", 130); });
+    document.querySelectorAll(".industry-grid").forEach(function (g) { staggerGroup(g, ".industry-card", "card", 100); });
+    document.querySelectorAll(".resource-grid").forEach(function (g) { staggerGroup(g, ".resource-cell", "card", 90); });
+    document.querySelectorAll(".subservice-grid").forEach(function (g) { staggerGroup(g, ".check-list", "text", 130); });
+
+    // Contact page: info rows on the left, form as one block on the right.
+    document.querySelectorAll(".contact-grid").forEach(function (g) { staggerGroup(g, ".contact-info-item", "text", 100); });
+
+    // Long reference lists/tables (standards, treaties, banks) — reveal the
+    // whole block once rather than each of dozens of rows individually.
+    document.querySelectorAll(".standards-section, .statement-section, .form-card").forEach(function (el) {
+      observeReveal(el, "text", 0);
+    });
+
+    // CTA bands, present near the bottom of most pages.
+    document.querySelectorAll(".cta-band").forEach(function (band) {
+      [band.querySelector("h2"), band.querySelector("p"), band.querySelector(".cta-band__actions")]
+        .filter(Boolean)
+        .forEach(function (el, i) { observeReveal(el, "text", i * 110); });
+    });
+  }
+
+  // Hero content animates in on load (it's already in the viewport), not on
+  // scroll: eyebrow, heading, lede and CTAs cascade in over ~0-500ms.
+  function initHeroReveal() {
+    if (prefersReducedMotion()) return;
+    var inner = document.querySelector(".hero__inner");
+    if (!inner) return;
+
+    var parts = [
+      inner.querySelector(".hero__eyebrow"),
+      inner.querySelector("h1"),
+      inner.querySelector(".hero__lede"),
+      inner.querySelector(".hero__actions")
+    ].filter(Boolean);
+    var map = document.querySelector(".footprint__map");
+    if (map) parts.unshift(map);
+
+    var reveals = parts.map(function (el, i) {
+      return armReveal(el, el === map ? "image" : "text", i * 140);
+    });
+
+    // Double rAF: guarantees the browser has painted the hidden starting
+    // state at least once before we flip to visible, so the transition
+    // actually plays instead of the element just appearing already-revealed.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        reveals.forEach(function (reveal) { reveal(); });
+      });
+    });
+  }
+
+  // Very subtle scroll-linked parallax on the homepage's decorative world
+  // map. Disabled on mobile and under reduced-motion, throttled to one
+  // update per animation frame.
+  function initParallax() {
+    if (prefersReducedMotion() || isMobileViewport()) return;
+    var el = document.querySelector(".footprint__map");
+    if (!el) return;
+
+    var ticking = false;
+    function update() {
+      var rect = el.getBoundingClientRect();
+      var viewportMid = window.innerHeight / 2;
+      var elMid = rect.top + rect.height / 2;
+      var progress = (elMid - viewportMid) / window.innerHeight;
+      var offset = Math.max(-30, Math.min(30, progress * -30));
+      el.style.transform = "translate3d(0, " + offset.toFixed(1) + "px, 0)";
+      ticking = false;
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+    // Wait for the hero's on-load reveal (which briefly owns this same
+    // element's transform) to fully settle before parallax starts writing
+    // to it, so a very fast early scroll can't cause the two to collide.
+    window.setTimeout(function () {
+      window.addEventListener("scroll", onScroll, { passive: true });
+    }, REVEAL_DURATION + 600);
+  }
+
+  // Animates [data-count-to="1234"] elements from 0 up to their target when
+  // they enter the viewport. Nothing on the site uses this yet — it's ready
+  // for whenever a stats/numbers section is added: give any element
+  // data-count-to="500" (plus optional data-count-suffix="+") and it works.
+  function initCounters() {
+    var counters = document.querySelectorAll("[data-count-to]");
+    if (!counters.length || !("IntersectionObserver" in window)) return;
+    var reduce = prefersReducedMotion();
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        var el = entry.target;
+        var target = parseFloat(el.getAttribute("data-count-to"));
+        var suffix = el.getAttribute("data-count-suffix") || "";
+        if (isNaN(target)) return;
+        if (reduce) {
+          el.textContent = target.toLocaleString() + suffix;
+          return;
+        }
+        var duration = 1800;
+        var start = null;
+        function tick(ts) {
+          if (start === null) start = ts;
+          var progress = Math.min(1, (ts - start) / duration);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(target * eased).toLocaleString() + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.4 });
+
+    counters.forEach(function (el) { observer.observe(el); });
+  }
+
   function initLayout(opts) {
     var locale = opts.locale || "ru";
     var depth = opts.depth || 0;
@@ -446,6 +687,10 @@
     }
 
     initCustomCursor();
+    initHeroReveal();
+    initScrollReveal();
+    initParallax();
+    initCounters();
   }
 
   window.BlackstoneLayout = { init: initLayout, icons: ICONS, pages: PAGES, rel: rel };
