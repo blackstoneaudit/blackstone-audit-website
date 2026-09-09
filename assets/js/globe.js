@@ -102,8 +102,8 @@
     // offset this large would push the globe almost entirely off-screen —
     // bring it back toward center and a bit closer instead.
     var GLOBE_POS = isNarrow
-      ? new THREE.Vector3(0.62, -0.05, 0)
-      : new THREE.Vector3(2.2, -0.22, 0);
+      ? new THREE.Vector3(0.62, -0.02, 0)
+      : new THREE.Vector3(2.2, 0.16, 0);
 
     // a portrait aspect makes the horizontal FOV much tighter than the
     // vertical one at the same fov value, so up close the sphere's surface
