@@ -39,11 +39,12 @@
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (typeof THREE === "undefined" || !hasWebGL()) return;
 
-    var container = footprint.parentNode; // .hero .container
-    var heroInner = container.querySelector(".hero__inner");
+    var innerContainer = footprint.parentNode; // .hero .container
+    var hero = footprint.closest(".hero");
+    var contentBlock = innerContainer.querySelector(".hero__inner");
     var mapImg = footprint.querySelector(".footprint__map");
     var markerEls = footprint.querySelectorAll(".footprint__marker");
-    if (!container || !mapImg || !markerEls.length) return;
+    if (!hero || !innerContainer || !mapImg || !markerEls.length) return;
 
     var countries = [];
     markerEls.forEach(function (el, i) {
@@ -59,13 +60,18 @@
     if (!countries.length) return;
 
     try {
-      buildScene(footprint, container, heroInner, mapImg, countries);
+      buildScene(footprint, hero, innerContainer, mapImg, countries);
     } catch (e) {
       // Any WebGL/runtime failure: leave the flat map exactly as it was.
     }
   }
 
-  function buildScene(footprint, container, heroInner, mapImg, countries) {
+  // `container` here is the full .hero section, not the narrower
+  // max-width .container inside it — mounting to the wider element means
+  // the canvas has room to fade out before hitting its own edge instead of
+  // ending in a visible seam against the plain hero background at wide
+  // viewports.
+  function buildScene(footprint, container, innerContainer, mapImg, countries) {
     var TIER_SIZE = { lg: 0.11, md: 0.085, sm: 0.068 };
     var GLOBE_R = 1.7;
 
@@ -366,8 +372,8 @@
         glow.className = "hero__globe-glow";
         layer.appendChild(glow);
         layer.appendChild(renderer.domElement);
-        if (heroInner) {
-          container.insertBefore(layer, heroInner);
+        if (innerContainer) {
+          container.insertBefore(layer, innerContainer);
         } else {
           container.appendChild(layer);
         }
@@ -434,8 +440,14 @@
             if (m.userData.tag) {
               var dir = m.position.clone().normalize();
               var rotatedZ = -dir.x * Math.sin(globeGroup.rotation.y) + dir.z * Math.cos(globeGroup.rotation.y);
-              if (rotatedZ > 0.08) {
-                tagProjected.copy(m.getWorldPosition(new THREE.Vector3())).project(camera);
+              tagProjected.copy(m.getWorldPosition(new THREE.Vector3())).project(camera);
+              // rotatedZ is an approximation (it ignores the camera's x-offset
+              // from the globe's center), so it stays permissive near the
+              // silhouette edge — a marker just past "front-facing" can still
+              // project far outside the visible globe. Require a healthy
+              // margin AND a projected position still reasonably on-screen.
+              var onScreen = Math.abs(tagProjected.x) < 0.85 && Math.abs(tagProjected.y) < 0.85;
+              if (rotatedZ > 0.35 && onScreen) {
                 var tx = (tagProjected.x * 0.5 + 0.5) * tagRect.width;
                 var ty = (-tagProjected.y * 0.5 + 0.5) * tagRect.height;
                 m.userData.tag.style.transform = "translate(" + tx.toFixed(1) + "px, " + ty.toFixed(1) + "px) translate(-50%, calc(-100% - 10px))";
