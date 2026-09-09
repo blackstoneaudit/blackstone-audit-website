@@ -381,9 +381,6 @@
         // swap the flat circular map for the live canvas only once everything
         // above succeeded and the texture is actually ready to paint
         footprint.style.display = "none";
-        var glow = document.createElement("div");
-        glow.className = "hero__globe-glow";
-        layer.appendChild(glow);
         layer.appendChild(renderer.domElement);
         if (innerContainer) {
           container.insertBefore(layer, innerContainer);

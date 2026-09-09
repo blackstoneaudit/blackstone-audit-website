@@ -735,17 +735,6 @@ p {
   transform: translateX(-50%);
 }
 
-.hero__globe-glow {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 60%;
-  background: radial-gradient(ellipse at center, rgba(227, 199, 133, 0.32), transparent 60%);
-  pointer-events: none;
-  z-index: -1;
-}
-
 @media (max-width: 900px) {
   .footprint {
     width: 220px;
