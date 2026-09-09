@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<script>
+(function () {
+  "use strict";
+  var ref = document.referrer;
+  var sameSite = ref && ref.indexOf(location.origin) === 0;
+  if (!sameSite) {
+    location.replace("en/");
+  }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blackstone Audit — Аудит, налоги и право в Узбекистане</title>
