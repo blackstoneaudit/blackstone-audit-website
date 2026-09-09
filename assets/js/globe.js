@@ -35,7 +35,7 @@
   function initGlobe() {
     var footprint = document.querySelector(".footprint");
     if (!footprint) return;
-    if (window.innerWidth < 900) return;
+    if (window.innerWidth < 320) return;
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (typeof THREE === "undefined" || !hasWebGL()) return;
 
@@ -91,17 +91,30 @@
     var layer = document.createElement("div");
     layer.className = "hero__globe-layer";
 
-    // big, close, right/bottom-anchored — the frame catches the curved limb
-    // of the planet rather than a small full ball floating in space
-    var GLOBE_POS = new THREE.Vector3(1.65, -0.6, 0);
-
     var scene = new THREE.Scene();
     var rect = container.getBoundingClientRect();
-    var camera = new THREE.PerspectiveCamera(35, rect.width / Math.max(rect.height, 1), 0.1, 100);
-    camera.position.set(0, 0, 2.6);
+    var aspect = rect.width / Math.max(rect.height, 1);
+    var isNarrow = aspect < 1.05;
+
+    // big and close — the frame catches the curved limb of the planet,
+    // but pulled back enough to still show black space and stars around it.
+    // On a narrow/portrait screen the horizontal FOV is much tighter, so an
+    // offset this large would push the globe almost entirely off-screen —
+    // bring it back toward center and a bit closer instead.
+    var GLOBE_POS = isNarrow
+      ? new THREE.Vector3(0.62, -0.05, 0)
+      : new THREE.Vector3(2.2, -0.22, 0);
+
+    // a portrait aspect makes the horizontal FOV much tighter than the
+    // vertical one at the same fov value, so up close the sphere's surface
+    // fills the frame edge-to-edge with no visible curvature — like
+    // standing with your face against a wall. A wider fov keeps enough
+    // horizontal field of view to actually see the globe's shape.
+    var camera = new THREE.PerspectiveCamera(isNarrow ? 55 : 35, aspect, 0.1, 100);
+    camera.position.set(0, 0, isNarrow ? 4.8 : 5.5);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isNarrow ? 1.5 : 2));
     renderer.setSize(rect.width, rect.height);
 
     function proceed() {
@@ -151,7 +164,7 @@
           } catch (e) {
             return; // cross-origin canvas read blocked: skip points, keep plain sphere
           }
-          var stride = 1;
+          var stride = isNarrow ? 2 : 1;
           var positions = [];
           for (var py = 0; py < h; py += stride) {
             for (var px = 0; px < w; px += stride) {
@@ -399,10 +412,8 @@
         resize();
         window.addEventListener("resize", resize);
 
-        layer.addEventListener("pointermove", function (evt) {
+        function updateHover(x, y) {
           var r = container.getBoundingClientRect();
-          var x = evt.clientX - r.left;
-          var y = evt.clientY - r.top;
           pointerNDC.x = (x / r.width) * 2 - 1;
           pointerNDC.y = -(y / r.height) * 2 + 1;
           raycaster.setFromCamera(pointerNDC, camera);
@@ -417,7 +428,60 @@
             hovered = null;
             tooltip.classList.remove("is-visible");
           }
+        }
+
+        // drag-to-rotate — hold and spin the globe in any direction; it
+        // keeps coasting on release and eases back into the slow ambient
+        // spin once it settles
+        var MAX_TILT = 0.85;
+        var isDragging = false;
+        var dragLastX = 0, dragLastY = 0;
+        var dragVelX = 0, dragVelY = 0;
+        var canvasEl = renderer.domElement;
+        canvasEl.style.cursor = "grab";
+        canvasEl.style.touchAction = "none";
+
+        layer.addEventListener("pointerdown", function (evt) {
+          isDragging = true;
+          dragLastX = evt.clientX;
+          dragLastY = evt.clientY;
+          dragVelX = 0;
+          dragVelY = 0;
+          hovered = null;
+          tooltip.classList.remove("is-visible");
+          canvasEl.style.cursor = "grabbing";
+          if (canvasEl.setPointerCapture) {
+            try { canvasEl.setPointerCapture(evt.pointerId); } catch (e) {}
+          }
         });
+
+        layer.addEventListener("pointermove", function (evt) {
+          var r = container.getBoundingClientRect();
+          var x = evt.clientX - r.left;
+          var y = evt.clientY - r.top;
+
+          if (isDragging) {
+            var dx = evt.clientX - dragLastX;
+            var dy = evt.clientY - dragLastY;
+            dragLastX = evt.clientX;
+            dragLastY = evt.clientY;
+            var sensitivity = 0.0045;
+            dragVelY = dx * sensitivity;
+            dragVelX = dy * sensitivity;
+            globeGroup.rotation.y += dragVelY;
+            globeGroup.rotation.x = Math.max(-MAX_TILT, Math.min(MAX_TILT, globeGroup.rotation.x + dragVelX));
+            return;
+          }
+          updateHover(x, y);
+        });
+
+        function endDrag() {
+          if (!isDragging) return;
+          isDragging = false;
+          canvasEl.style.cursor = "grab";
+        }
+        layer.addEventListener("pointerup", endDrag);
+        layer.addEventListener("pointercancel", endDrag);
         layer.addEventListener("pointerleave", function () {
           hovered = null;
           tooltip.classList.remove("is-visible");
@@ -430,7 +494,21 @@
         function animate() {
           requestAnimationFrame(animate);
           var t = clock.getElapsedTime();
-          globeGroup.rotation.y += 0.0011;
+
+          if (isDragging) {
+            // rotation already applied directly in the pointermove handler
+          } else if (Math.abs(dragVelX) > 0.00005 || Math.abs(dragVelY) > 0.00005) {
+            // coast on released momentum, decaying each frame
+            dragVelX *= 0.94;
+            dragVelY *= 0.94;
+            globeGroup.rotation.y += dragVelY;
+            globeGroup.rotation.x = Math.max(-MAX_TILT, Math.min(MAX_TILT, globeGroup.rotation.x + dragVelX));
+          } else {
+            // settle back to the slow ambient spin, and ease any manual
+            // tilt back toward level so it doesn't stay stuck sideways
+            globeGroup.rotation.y += 0.0011;
+            globeGroup.rotation.x *= 0.98;
+          }
           tagRect = container.getBoundingClientRect();
           markers.forEach(function (m) {
             var pulse = 1 + 0.16 * Math.sin(t * 2 + m.userData.phase);

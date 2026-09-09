@@ -770,6 +770,10 @@ p {
   overflow: hidden;
 }
 
+.hero:not(.hero--page) {
+  align-items: flex-start;
+}
+
 .hero::before {
   content: '';
   position: absolute;
@@ -813,6 +817,7 @@ p {
 
 .hero:not(.hero--page) .hero__inner {
   max-width: 900px;
+  padding-top: 70px;
 }
 
 .hero--page {
