@@ -737,11 +737,11 @@ p {
 
 .hero__globe-glow {
   position: absolute;
-  top: 8%;
-  right: -6%;
-  width: 62%;
-  height: 84%;
-  background: radial-gradient(circle at 68% 30%, rgba(227, 199, 133, 0.32), transparent 68%);
+  top: -10%;
+  right: -25%;
+  width: 100%;
+  height: 120%;
+  background: radial-gradient(circle at center, rgba(227, 199, 133, 0.32), transparent 62%);
   pointer-events: none;
   z-index: -1;
 }

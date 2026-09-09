@@ -145,7 +145,7 @@
           } catch (e) {
             return; // cross-origin canvas read blocked: skip points, keep plain sphere
           }
-          var stride = Math.max(1, Math.round(Math.max(w, h) / 190));
+          var stride = 1;
           var positions = [];
           for (var py = 0; py < h; py += stride) {
             for (var px = 0; px < w; px += stride) {
@@ -163,10 +163,10 @@
           geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(positions), 3));
           var mat = new THREE.PointsMaterial({
             color: 0xe3c785,
-            size: 0.014,
+            size: 0.010,
             sizeAttenuation: true,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.85,
             depthWrite: false
           });
           globeGroup.add(new THREE.Points(geo, mat));
@@ -209,8 +209,9 @@
           mesh.position.copy(GLOBE_POS);
           return mesh;
         }
-        scene.add(makeRimMesh(0.06, 2.4, 1.0));
-        scene.add(makeRimMesh(0.22, 1.4, 0.45));
+        scene.add(makeRimMesh(0.05, 2.6, 1.0));
+        scene.add(makeRimMesh(0.2, 1.6, 0.5));
+        scene.add(makeRimMesh(0.5, 1.0, 0.28));
 
         scene.add(new THREE.AmbientLight(0x2c2210, 1));
         var key = new THREE.DirectionalLight(0xe3c785, 0.9);
@@ -233,8 +234,8 @@
         var starMat = new THREE.PointsMaterial({ color: 0xcfc6ad, size: 0.02, transparent: true, opacity: 0.5 });
         scene.add(new THREE.Points(starGeo, starMat));
 
-        // marker sprites — a crisp solid dot with a thin halo, not a soft
-        // blurred blob
+        // pulse/arc sprite texture — soft glow, used for the flight-path
+        // pulses where a blurred look is wanted
         var dotCanvas = document.createElement("canvas");
         dotCanvas.width = dotCanvas.height = 64;
         var dctx = dotCanvas.getContext("2d");
@@ -248,6 +249,20 @@
         dctx.fillRect(0, 0, 64, 64);
         var dotTexture = new THREE.CanvasTexture(dotCanvas);
 
+        // marker sprite texture — small, solid, flat dot (like a pin), not
+        // a glowing blob
+        var markerCanvas = document.createElement("canvas");
+        markerCanvas.width = markerCanvas.height = 64;
+        var mctx = markerCanvas.getContext("2d");
+        var mgrad = mctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        mgrad.addColorStop(0, "rgba(255,244,214,1)");
+        mgrad.addColorStop(0.55, "rgba(227,199,133,1)");
+        mgrad.addColorStop(0.72, "rgba(227,199,133,0.65)");
+        mgrad.addColorStop(1, "rgba(227,199,133,0)");
+        mctx.fillStyle = mgrad;
+        mctx.fillRect(0, 0, 64, 64);
+        var markerTexture = new THREE.CanvasTexture(markerCanvas);
+
         // persistent floating labels only for the primary markets, echoing
         // the reference's always-on country tags instead of hover-only
         var LABELED_TIERS = { lg: true, md: true };
@@ -256,13 +271,13 @@
           var ll = toLatLon(c);
           var pos = latLonToVector3(ll.lat, ll.lon, GLOBE_R + 0.02);
           var sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-            map: dotTexture,
+            map: markerTexture,
             color: 0xe3c785,
             transparent: true,
             depthWrite: false
           }));
           sprite.position.copy(pos);
-          var base = TIER_SIZE[c.tier] * 0.8;
+          var base = TIER_SIZE[c.tier] * 0.5;
           sprite.scale.set(base, base, 1);
           sprite.userData = { label: c.label, baseScale: base, phase: c.phase };
 
@@ -284,7 +299,8 @@
         var ROUTE_TARGETS = [
           { x: 58.67, y: 39.95 }, // Turkey
           { x: 81.20, y: 39.95 }, // China
-          { x: 49.80, y: 37.03 }  // United Kingdom
+          { x: 49.80, y: 37.03 }, // United Kingdom
+          { x: 57.44, y: 56.47 }  // South Africa
         ];
         function nearestCountry(ref) {
           var best = null, bestDist = Infinity;
