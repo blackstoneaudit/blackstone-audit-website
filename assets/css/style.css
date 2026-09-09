@@ -579,11 +579,14 @@ p {
 .footprint {
   position: absolute;
   top: 50%;
-  right: -10%;
+  right: 5%;
   transform: translateY(-50%);
-  width: 82%;
-  max-width: 1040px;
+  width: clamp(300px, 30vw, 440px);
   aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 75, 0.35);
+  box-shadow: 0 0 0 10px rgba(201, 162, 75, 0.06), 0 30px 70px rgba(0, 0, 0, 0.55);
   z-index: 0;
   pointer-events: none;
 }
@@ -594,14 +597,13 @@ p {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: invert(1) brightness(0.9);
-  mix-blend-mode: screen;
+  filter: grayscale(1) sepia(0.5) saturate(2.4) hue-rotate(-8deg) brightness(0.85);
   opacity: 0;
   animation: footprintFadeIn 1.6s ease forwards 0.2s;
 }
 
 @keyframes footprintFadeIn {
-  to { opacity: 0.55; }
+  to { opacity: 0.9; }
 }
 
 .footprint__marker {
@@ -658,14 +660,14 @@ p {
 
 @media (max-width: 900px) {
   .footprint {
-    width: 130%;
-    right: -30%;
-    opacity: 0.5;
+    width: 220px;
+    right: -40px;
+    opacity: 0.55;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .footprint__map { animation: none; opacity: 0.55; }
+  .footprint__map { animation: none; opacity: 0.9; }
   .footprint__marker { animation: none; opacity: 1; }
 }
 
