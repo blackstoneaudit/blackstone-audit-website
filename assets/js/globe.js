@@ -67,7 +67,7 @@
 
   function buildScene(footprint, container, heroInner, mapImg, countries) {
     var TIER_SIZE = { lg: 0.11, md: 0.085, sm: 0.068 };
-    var GLOBE_R = 1.35;
+    var GLOBE_R = 1.7;
 
     function latLonToVector3(lat, lon, radius) {
       var phi = (90 - lat) * (Math.PI / 180);
@@ -85,10 +85,14 @@
     var layer = document.createElement("div");
     layer.className = "hero__globe-layer";
 
+    // big, close, right/bottom-anchored — the frame catches the curved limb
+    // of the planet rather than a small full ball floating in space
+    var GLOBE_POS = new THREE.Vector3(1.65, -0.6, 0);
+
     var scene = new THREE.Scene();
     var rect = container.getBoundingClientRect();
     var camera = new THREE.PerspectiveCamera(35, rect.width / Math.max(rect.height, 1), 0.1, 100);
-    camera.position.set(0, 0, 4.2);
+    camera.position.set(0, 0, 2.6);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -101,9 +105,9 @@
         mapTex.encoding = THREE.sRGBEncoding;
 
         var globeGroup = new THREE.Group();
-        // large, right-anchored, bleeding past the frame edge — a deliberate
-        // graphic object rather than a small clipped inset
-        globeGroup.position.set(1.15, 0, 0);
+        // large, close, bleeding past the frame edge — a deliberate graphic
+        // object rather than a small ball floating centered in space
+        globeGroup.position.copy(GLOBE_POS);
         scene.add(globeGroup);
 
         var geometry = new THREE.SphereGeometry(GLOBE_R, 64, 64);
@@ -111,16 +115,20 @@
           map: mapTex,
           emissive: new THREE.Color(0xc9a24b),
           emissiveMap: mapTex,
-          emissiveIntensity: 0.55,
-          color: new THREE.Color(0x2a2410),
-          roughness: 0.85,
-          metalness: 0.1
+          emissiveIntensity: 0.32,
+          color: new THREE.Color(0x0c0904),
+          roughness: 0.9,
+          metalness: 0.05
         });
         var globe = new THREE.Mesh(geometry, material);
         globeGroup.add(globe);
 
-        var rimGeo = new THREE.SphereGeometry(GLOBE_R + 0.05, 64, 64);
+        // atmosphere glow — a separate, non-rotating shell (a rotating rim
+        // would spin the directional "sunrise" bias with it) biased toward
+        // one side like backlit atmosphere, instead of a uniform ring
+        var rimGeo = new THREE.SphereGeometry(GLOBE_R + 0.06, 64, 64);
         var rimMat = new THREE.ShaderMaterial({
+          uniforms: { lightDir: { value: new THREE.Vector3(-0.6, 0.55, 0.4).normalize() } },
           vertexShader: [
             "varying vec3 vNormal;",
             "void main() {",
@@ -130,9 +138,12 @@
           ].join("\n"),
           fragmentShader: [
             "varying vec3 vNormal;",
+            "uniform vec3 lightDir;",
             "void main() {",
-            "  float intensity = pow(0.68 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);",
-            "  gl_FragColor = vec4(0.79, 0.64, 0.30, 1.0) * intensity;",
+            "  float fresnel = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.4);",
+            "  float directional = max(dot(vNormal, lightDir), 0.0);",
+            "  float intensity = fresnel * mix(0.22, 1.0, directional);",
+            "  gl_FragColor = vec4(0.95, 0.58, 0.22, 1.0) * intensity;",
             "}"
           ].join("\n"),
           blending: THREE.AdditiveBlending,
@@ -140,10 +151,11 @@
           transparent: true
         });
         var rim = new THREE.Mesh(rimGeo, rimMat);
-        globeGroup.add(rim);
+        rim.position.copy(GLOBE_POS);
+        scene.add(rim);
 
-        scene.add(new THREE.AmbientLight(0x554015, 1.2));
-        var key = new THREE.DirectionalLight(0xe3c785, 1.1);
+        scene.add(new THREE.AmbientLight(0x2c2210, 1));
+        var key = new THREE.DirectionalLight(0xe3c785, 0.9);
         key.position.set(-3, 2, 3);
         scene.add(key);
 
@@ -192,6 +204,59 @@
           return sprite;
         });
 
+        // a few glowing "flight path" arcs from the home market outward —
+        // matched by coordinates (locale-independent), same trick as
+        // FACE_ON_LOAD above
+        var HUB_COORD = { x: 68.48, y: 39.60 }; // Uzbekistan
+        var ROUTE_TARGETS = [
+          { x: 58.67, y: 39.95 }, // Turkey
+          { x: 81.20, y: 39.95 }, // China
+          { x: 49.80, y: 37.03 }  // United Kingdom
+        ];
+        function nearestCountry(ref) {
+          var best = null, bestDist = Infinity;
+          countries.forEach(function (c) {
+            var d = Math.hypot(c.x - ref.x, c.y - ref.y);
+            if (d < bestDist) { bestDist = d; best = c; }
+          });
+          return best;
+        }
+        var hub = nearestCountry(HUB_COORD);
+        var pulses = [];
+        if (hub) {
+          var hubPos = latLonToVector3(toLatLon(hub).lat, toLatLon(hub).lon, GLOBE_R);
+          ROUTE_TARGETS.forEach(function (target, ri) {
+            var dest = nearestCountry(target);
+            if (!dest || dest === hub) return;
+            var destPos = latLonToVector3(toLatLon(dest).lat, toLatLon(dest).lon, GLOBE_R);
+
+            var lifted = [];
+            var segments = 48;
+            for (var i = 0; i <= segments; i++) {
+              var t = i / segments;
+              var p = new THREE.Vector3().lerpVectors(hubPos, destPos, t);
+              p.normalize();
+              var lift = 1 + Math.sin(Math.PI * t) * 0.24;
+              p.multiplyScalar(GLOBE_R * lift);
+              lifted.push(p);
+            }
+            var curve = new THREE.CatmullRomCurve3(lifted);
+            var lineGeo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(64));
+            var lineMat = new THREE.LineBasicMaterial({ color: 0xe3c785, transparent: true, opacity: 0.32 });
+            globeGroup.add(new THREE.Line(lineGeo, lineMat));
+
+            var pulseSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+              map: dotTexture,
+              color: 0xfff4d6,
+              transparent: true,
+              depthWrite: false
+            }));
+            pulseSprite.scale.set(0.045, 0.045, 1);
+            globeGroup.add(pulseSprite);
+            pulses.push({ curve: curve, sprite: pulseSprite, offset: ri / ROUTE_TARGETS.length, speed: 0.09 });
+          });
+        }
+
         // face the highest-priority market on load instead of an arbitrary angle
         var closest = null, closestDist = Infinity;
         countries.forEach(function (c) {
@@ -207,6 +272,9 @@
         // swap the flat circular map for the live canvas only once everything
         // above succeeded and the texture is actually ready to paint
         footprint.style.display = "none";
+        var glow = document.createElement("div");
+        glow.className = "hero__globe-glow";
+        layer.appendChild(glow);
         layer.appendChild(renderer.domElement);
         if (heroInner) {
           container.insertBefore(layer, heroInner);
@@ -264,6 +332,12 @@
             var pulse = 1 + 0.16 * Math.sin(t * 2 + m.userData.phase);
             var s = m.userData.baseScale * (m === hovered ? 1.35 : pulse);
             m.scale.set(s, s, 1);
+          });
+          pulses.forEach(function (p) {
+            var ct = (t * p.speed + p.offset) % 1;
+            p.sprite.position.copy(p.curve.getPointAt(ct));
+            var fade = Math.sin(ct * Math.PI);
+            p.sprite.material.opacity = 0.15 + 0.75 * fade;
           });
           renderer.render(scene, camera);
         }

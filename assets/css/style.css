@@ -699,6 +699,17 @@ p {
   height: 100%;
 }
 
+.hero__globe-glow {
+  position: absolute;
+  top: 8%;
+  right: -6%;
+  width: 62%;
+  height: 84%;
+  background: radial-gradient(circle at 68% 30%, rgba(227, 199, 133, 0.22), transparent 62%);
+  pointer-events: none;
+  z-index: -1;
+}
+
 @media (max-width: 900px) {
   .footprint {
     width: 220px;
