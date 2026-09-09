@@ -820,6 +820,25 @@ p {
   padding-top: 70px;
 }
 
+/* Text (and the .container box around it) sits visually over the globe
+   canvas underneath. Let clicks and drags pass through the empty space
+   and non-interactive text so the globe can be grabbed from anywhere
+   it's visible, not just where it's not covered by copy — then
+   re-enable the actual controls explicitly. The globe canvas itself
+   lives in a sibling layer, unaffected by this. */
+.hero:not(.hero--page) .container {
+  pointer-events: none;
+}
+
+.hero:not(.hero--page) .hero__inner a,
+.hero:not(.hero--page) .hero__inner button,
+.hero:not(.hero--page) .hero__inner [data-lang-switch],
+.hero:not(.hero--page) .hero__inner select,
+.hero:not(.hero--page) .hero__inner input,
+.hero:not(.hero--page) .hero__inner textarea {
+  pointer-events: auto;
+}
+
 .hero--page {
   min-height: 0;
   display: block;
