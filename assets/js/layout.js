@@ -31,17 +31,18 @@
   // through PAGES (locale/prefix-aware); "external" and "placeholder" use the
   // same href in every locale (placeholder = "#", not yet a real page).
   var RESOURCE_ITEMS = [
-    { id: "isa", kind: "internal" },
-    { id: "ifrs", kind: "internal" },
-    { id: "iesba", kind: "external", href: "https://www.ethicsboard.org/iesba-code" },
-    { id: "local-audit", kind: "internal" },
-    { id: "local-accounting", kind: "internal" },
-    { id: "tax-code", kind: "external", href: "https://lex.uz/docs/-4674902" },
-    { id: "labor-code", kind: "external", href: "https://lex.uz/ru/docs/-6257288" },
-    { id: "dtt", kind: "internal" },
-    { id: "banks", kind: "internal" }
+    { id: "isa", kind: "internal", group: "international" },
+    { id: "ifrs", kind: "internal", group: "international" },
+    { id: "iesba", kind: "external", href: "https://www.ethicsboard.org/iesba-code", group: "international" },
+    { id: "local-audit", kind: "internal", group: "local" },
+    { id: "local-accounting", kind: "internal", group: "local" },
+    { id: "tax-code", kind: "external", href: "https://lex.uz/docs/-4674902", group: "local" },
+    { id: "labor-code", kind: "external", href: "https://lex.uz/ru/docs/-6257288", group: "local" },
+    { id: "dtt", kind: "internal", group: "reference" },
+    { id: "banks", kind: "internal", group: "reference" }
   ];
   var RESOURCE_ORDER = RESOURCE_ITEMS.map(function (item) { return item.id; });
+  var RESOURCE_GROUP_ORDER = ["international", "local", "reference"];
 
   var I18N = {
     ru: {
@@ -69,6 +70,15 @@
         dtt: "Соглашения об избежании двойного налогообложения",
         banks: "Банки Узбекистана"
       },
+      resourceGroups: {
+        international: "Международные стандарты",
+        local: "Местное законодательство",
+        reference: "Справочники и реестры"
+      },
+      servicesIntro: "Аудит, налоги, право, бухучёт и регистрация бизнеса — одна команда, пять направлений поддержки вашего бизнеса в Узбекистане.",
+      servicesCta: "Все услуги",
+      resourcesIntro: "Стандарты и законодательство, на которых строится наша работа — международные и местные, в одном месте.",
+      resourcesCta: "Все ресурсы",
       ctaHeader: "Заказать консультацию",
       footerAbout: "Blackstone Audit — команда аудиторов, налоговых и юридических консультантов, которая помогает бизнесу в Узбекистане и Центральной Азии работать прозрачно и уверенно.",
       footerServices: "Услуги",
@@ -102,6 +112,15 @@
         dtt: "Double Taxation Treaties",
         banks: "Banks of Uzbekistan"
       },
+      resourceGroups: {
+        international: "International Standards",
+        local: "Local Legislation",
+        reference: "Reference & Registries"
+      },
+      servicesIntro: "Audit, tax, legal, accounting and business registration — one team, five ways we help your business operate with confidence in Uzbekistan.",
+      servicesCta: "Explore all services",
+      resourcesIntro: "Standards and legislation our audit, tax and legal work is built on — international and local, in one place.",
+      resourcesCta: "Browse all resources",
       ctaHeader: "Request a Consultation",
       footerAbout: "Blackstone Audit is a team of audit, tax and legal advisors helping businesses in Uzbekistan and Central Asia operate transparently and with confidence.",
       footerServices: "Services",
@@ -135,6 +154,15 @@
         dtt: "Ikki yoqlama soliqqa tortish bitimlari",
         banks: "O'zbekiston banklari"
       },
+      resourceGroups: {
+        international: "Xalqaro standartlar",
+        local: "Mahalliy qonunchilik",
+        reference: "Ma'lumotnoma va reyestrlar"
+      },
+      servicesIntro: "Audit, soliq, huquq, buxgalteriya va biznesni ro'yxatdan o'tkazish — bitta jamoa, biznesingizga yordam berishning beshta yo'li.",
+      servicesCta: "Barcha xizmatlar",
+      resourcesIntro: "Ishimiz asoslangan xalqaro va mahalliy standartlar hamda qonunchilik — bir joyda.",
+      resourcesCta: "Barcha resurslar",
       ctaHeader: "Konsultatsiya buyurtma qilish",
       footerAbout: "Blackstone Audit — O'zbekiston va Markaziy Osiyo biznesiga shaffof va ishonchli ishlashda yordam beruvchi audit, soliq va yuridik maslahatchilar jamoasi.",
       footerServices: "Xizmatlar",
@@ -151,6 +179,8 @@
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.4"/></svg>',
     clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'
   };
+
+  var CTA_ARROW = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   function rel(depth) {
     return new Array(depth + 1).join("../");
@@ -177,13 +207,35 @@
 
   function buildHeader(locale, active, prefix) {
     var t = I18N[locale];
-    var servicesLinks = SERVICE_ORDER.map(function (id) {
-      return '<a class="main-nav__dropdown-link" href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + "</a>";
+    var servicesList = SERVICE_ORDER.map(function (id) {
+      return '<a href="' + linkTo(prefix, PAGES[id][locale]) + '">' + t.services[id] + ' <span class="nav-panel__arrow">→</span></a>';
     }).join("");
 
-    var resourcesLinks = RESOURCE_ITEMS.map(function (item) {
-      return '<a class="main-nav__dropdown-link" href="' + resourceHref(item, locale, prefix) + '"' + resourceExtraAttrs(item) + '>' + t.resourceItems[item.id] + "</a>";
+    var servicesPanel =
+      '<div class="nav-panel__intro">' +
+        "<p>" + t.servicesIntro + "</p>" +
+        '<a class="nav-panel__cta" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.servicesCta + " " + CTA_ARROW + "</a>" +
+      "</div>" +
+      '<div class="nav-panel__list">' + servicesList + "</div>";
+
+    var resourceGroups = RESOURCE_GROUP_ORDER.map(function (group) {
+      var itemsInGroup = RESOURCE_ITEMS.filter(function (item) { return item.group === group; }).map(function (item) {
+        return '<a href="' + resourceHref(item, locale, prefix) + '"' + resourceExtraAttrs(item) + '>' + t.resourceItems[item.id] + "</a>";
+      }).join("");
+      return (
+        '<div class="nav-panel__group">' +
+          '<div class="nav-panel__group-label">' + t.resourceGroups[group] + "</div>" +
+          itemsInGroup +
+        "</div>"
+      );
     }).join("");
+
+    var resourcesPanel =
+      '<div class="nav-panel__intro">' +
+        "<p>" + t.resourcesIntro + "</p>" +
+        '<a class="nav-panel__cta" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.resourcesCta + " " + CTA_ARROW + "</a>" +
+      "</div>" +
+      '<div class="nav-panel__groups">' + resourceGroups + "</div>";
 
     var servicesActive = SERVICE_ORDER.indexOf(active) !== -1 || active === "services";
     var resourcesActive = RESOURCE_ORDER.indexOf(active) !== -1 || active === "resources";
@@ -219,11 +271,11 @@
             '<li><a class="main-nav__link' + (active === "home" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.home[locale]) + '">' + t.navHome + "</a></li>" +
             '<li class="main-nav__item">' +
               '<a class="main-nav__link' + (servicesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.services[locale]) + '">' + t.navServices + " ▾</a>" +
-              '<div class="main-nav__dropdown">' + servicesLinks + "</div>" +
+              '<div class="main-nav__dropdown">' + servicesPanel + "</div>" +
             "</li>" +
             '<li class="main-nav__item">' +
               '<a class="main-nav__link' + (resourcesActive ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + " ▾</a>" +
-              '<div class="main-nav__dropdown">' + resourcesLinks + "</div>" +
+              '<div class="main-nav__dropdown">' + resourcesPanel + "</div>" +
             "</li>" +
             '<li><a class="main-nav__link' + (active === "about" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + "</a></li>" +
             '<li><a class="main-nav__link' + (active === "contact" ? " is-active" : "") + '" href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a></li>" +
