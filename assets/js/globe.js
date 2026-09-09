@@ -98,12 +98,19 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(rect.width, rect.height);
 
-    var texLoader = new THREE.TextureLoader();
-    texLoader.load(
-      mapImg.currentSrc || mapImg.src,
-      function (mapTex) {
-        mapTex.encoding = THREE.sRGBEncoding;
+    function proceed() {
+      buildWithImage(mapImg);
+    }
+    if (mapImg.complete && mapImg.naturalWidth) {
+      proceed();
+    } else {
+      mapImg.addEventListener("load", proceed, { once: true });
+      mapImg.addEventListener("error", function () {
+        // image failed to load: flat map was never touched, nothing to undo
+      }, { once: true });
+    }
 
+    function buildWithImage(img) {
         var globeGroup = new THREE.Group();
         // large, close, bleeding past the frame edge — a deliberate graphic
         // object rather than a small ball floating centered in space
@@ -112,16 +119,58 @@
 
         var geometry = new THREE.SphereGeometry(GLOBE_R, 64, 64);
         var material = new THREE.MeshStandardMaterial({
-          map: mapTex,
-          emissive: new THREE.Color(0xc9a24b),
-          emissiveMap: mapTex,
-          emissiveIntensity: 0.48,
-          color: new THREE.Color(0x0c0904),
-          roughness: 0.9,
+          emissive: new THREE.Color(0x2a1f0c),
+          emissiveIntensity: 0.5,
+          color: new THREE.Color(0x0a0704),
+          roughness: 0.92,
           metalness: 0.05
         });
         var globe = new THREE.Mesh(geometry, material);
         globeGroup.add(globe);
+
+        // continents as an actual point cloud sampled from the existing
+        // dot-matrix map asset (its dots live in the alpha channel), instead
+        // of a texture baked onto the sphere — crisp individual points at
+        // any zoom, matching a genuine "data globe" render technique
+        (function buildContinentPoints() {
+          var sampleCanvas = document.createElement("canvas");
+          sampleCanvas.width = img.naturalWidth;
+          sampleCanvas.height = img.naturalHeight;
+          var sctx = sampleCanvas.getContext("2d");
+          sctx.drawImage(img, 0, 0);
+          var w = sampleCanvas.width, h = sampleCanvas.height;
+          var data;
+          try {
+            data = sctx.getImageData(0, 0, w, h).data;
+          } catch (e) {
+            return; // cross-origin canvas read blocked: skip points, keep plain sphere
+          }
+          var stride = Math.max(1, Math.round(Math.max(w, h) / 190));
+          var positions = [];
+          for (var py = 0; py < h; py += stride) {
+            for (var px = 0; px < w; px += stride) {
+              var idx = (py * w + px) * 4;
+              var alpha = data[idx + 3];
+              if (alpha > 40) {
+                var lon = (px / w) * 360 - 180;
+                var lat = 90 - (py / h) * 180;
+                var p = latLonToVector3(lat, lon, GLOBE_R + 0.006);
+                positions.push(p.x, p.y, p.z);
+              }
+            }
+          }
+          var geo = new THREE.BufferGeometry();
+          geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(positions), 3));
+          var mat = new THREE.PointsMaterial({
+            color: 0xe3c785,
+            size: 0.014,
+            sizeAttenuation: true,
+            transparent: true,
+            opacity: 0.9,
+            depthWrite: false
+          });
+          globeGroup.add(new THREE.Points(geo, mat));
+        })();
 
         // atmosphere glow — two non-rotating shells (a rotating rim would
         // spin the top/bottom bias with it): a tight bright core plus a
@@ -388,12 +437,7 @@
           renderer.render(scene, camera);
         }
         animate();
-      },
-      undefined,
-      function () {
-        // texture failed to load: flat map was never touched, nothing to undo
-      }
-    );
+    }
   }
 
   ready(initGlobe);
