@@ -7,6 +7,9 @@
   --color-gold: #c9a24b;
   --color-gold-light: #e3c785;
   --color-gold-dark: #9c7c33;
+  /* Darker than --color-gold-dark specifically for small text on light
+     backgrounds (WCAG AA 4.5:1) — gold-dark alone is only ~3.9:1 on white. */
+  --color-gold-text: #7a611f;
   --color-white: #ffffff;
   --color-offwhite: #f7f6f2;
   --color-gray-100: #eceae4;
@@ -115,7 +118,7 @@ p {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-gold-dark);
+  color: var(--color-gold-text);
   margin-bottom: 14px;
 }
 
@@ -533,7 +536,7 @@ p {
 }
 
 .mobile-nav__sublist .mobile-nav__link {
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: none;
   font-weight: 500;
   font-size: 0.92rem;
@@ -546,7 +549,7 @@ p {
 }
 
 .mobile-nav__langs a {
-  padding: 8px 14px;
+  padding: 13px 14px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--radius);
   color: var(--color-gray-300);
@@ -1256,7 +1259,7 @@ p {
   .footer-grid { grid-template-columns: 1fr; }
 }
 
-.footer-grid h4 {
+.footer-grid h3 {
   color: var(--color-white);
   font-family: var(--font-body);
   font-size: 0.82rem;
@@ -1266,8 +1269,14 @@ p {
 }
 
 .footer-grid li {
-  margin-bottom: 11px;
   font-size: 0.9rem;
+}
+
+/* Padding (not just margin) so the tappable area meets the ~44px
+   minimum touch-target guideline on mobile, not just the text line. */
+.footer-grid li a {
+  display: inline-block;
+  padding: 11px 0;
 }
 
 .footer-grid a:hover {

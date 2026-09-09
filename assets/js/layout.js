@@ -322,15 +322,15 @@
             "<p>" + t.footerAbout + "</p>" +
           "</div>" +
           '<div>' +
-            "<h4>" + t.footerServices + "</h4>" +
+            "<h3>" + t.footerServices + "</h3>" +
             "<ul>" + serviceLinks + "</ul>" +
           "</div>" +
           '<div>' +
-            "<h4>" + t.footerCompany + "</h4>" +
+            "<h3>" + t.footerCompany + "</h3>" +
             '<ul><li><a href="' + linkTo(prefix, PAGES.resources[locale]) + '">' + t.navResources + '</a></li><li><a href="' + linkTo(prefix, PAGES.about[locale]) + '">' + t.navAbout + '</a></li><li><a href="' + linkTo(prefix, PAGES.contact[locale]) + '">' + t.navContact + "</a></li></ul>" +
           "</div>" +
           '<div>' +
-            "<h4>" + t.footerContacts + "</h4>" +
+            "<h3>" + t.footerContacts + "</h3>" +
             "<ul>" +
               '<li><a href="tel:+998911625024">+998 91 162 50 24</a></li>' +
               '<li><a href="mailto:info@blackstone-audit.com">info@blackstone-audit.com</a></li>' +
