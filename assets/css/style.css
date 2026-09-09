@@ -780,6 +780,18 @@ p {
   pointer-events: none;
 }
 
+.hero:not(.hero--page)::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 160px;
+  background: linear-gradient(180deg, transparent, var(--color-white));
+  pointer-events: none;
+  z-index: 1;
+}
+
 .hero h1,
 .hero h2,
 .hero h3 {
@@ -788,6 +800,7 @@ p {
 
 .hero__inner {
   position: relative;
+  z-index: 2;
   padding: 110px 0 100px;
   max-width: 760px;
 }

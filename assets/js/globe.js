@@ -196,22 +196,23 @@
               "uniform vec3 bottomColor;",
               "uniform float uOpacity;",
               "void main() {",
-              "  float fresnel = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), " + fresnelPow.toFixed(1) + ");",
+              "  float fresnel = clamp(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 0.0, 1.0);",
+              "  fresnel = pow(fresnel, " + fresnelPow.toFixed(1) + ");",
               "  vec3 rimColor = mix(bottomColor, topColor, smoothstep(-0.6, 0.9, vNormal.y));",
               "  gl_FragColor = vec4(rimColor, 1.0) * fresnel * uOpacity;",
               "}"
             ].join("\n"),
             blending: THREE.AdditiveBlending,
             side: THREE.BackSide,
-            transparent: true
+            transparent: true,
+            depthWrite: false
           });
           var mesh = new THREE.Mesh(geo, mat);
           mesh.position.copy(GLOBE_POS);
           return mesh;
         }
         scene.add(makeRimMesh(0.05, 2.6, 1.0));
-        scene.add(makeRimMesh(0.2, 1.6, 0.5));
-        scene.add(makeRimMesh(0.5, 1.0, 0.28));
+        scene.add(makeRimMesh(0.2, 1.8, 0.5));
 
         scene.add(new THREE.AmbientLight(0x2c2210, 1));
         var key = new THREE.DirectionalLight(0xe3c785, 0.9);
