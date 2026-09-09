@@ -39,9 +39,11 @@
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (typeof THREE === "undefined" || !hasWebGL()) return;
 
+    var container = footprint.parentNode; // .hero .container
+    var heroInner = container.querySelector(".hero__inner");
     var mapImg = footprint.querySelector(".footprint__map");
     var markerEls = footprint.querySelectorAll(".footprint__marker");
-    if (!mapImg || !markerEls.length) return;
+    if (!container || !mapImg || !markerEls.length) return;
 
     var countries = [];
     markerEls.forEach(function (el, i) {
@@ -57,15 +59,15 @@
     if (!countries.length) return;
 
     try {
-      buildScene(footprint, mapImg, countries);
+      buildScene(footprint, container, heroInner, mapImg, countries);
     } catch (e) {
       // Any WebGL/runtime failure: leave the flat map exactly as it was.
     }
   }
 
-  function buildScene(footprint, mapImg, countries) {
+  function buildScene(footprint, container, heroInner, mapImg, countries) {
     var TIER_SIZE = { lg: 0.11, md: 0.085, sm: 0.068 };
-    var GLOBE_R = 1;
+    var GLOBE_R = 1.35;
 
     function latLonToVector3(lat, lon, radius) {
       var phi = (90 - lat) * (Math.PI / 180);
@@ -80,12 +82,17 @@
       return { lat: 90 - (c.y / 100) * 180, lon: (c.x / 100) * 360 - 180 };
     }
 
+    var layer = document.createElement("div");
+    layer.className = "hero__globe-layer";
+
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 100);
-    camera.position.set(0, 0, 2.7);
+    var rect = container.getBoundingClientRect();
+    var camera = new THREE.PerspectiveCamera(35, rect.width / Math.max(rect.height, 1), 0.1, 100);
+    camera.position.set(0, 0, 4.2);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(rect.width, rect.height);
 
     var texLoader = new THREE.TextureLoader();
     texLoader.load(
@@ -94,6 +101,9 @@
         mapTex.encoding = THREE.sRGBEncoding;
 
         var globeGroup = new THREE.Group();
+        // large, right-anchored, bleeding past the frame edge — a deliberate
+        // graphic object rather than a small clipped inset
+        globeGroup.position.set(1.15, 0, 0);
         scene.add(globeGroup);
 
         var geometry = new THREE.SphereGeometry(GLOBE_R, 64, 64);
@@ -109,7 +119,7 @@
         var globe = new THREE.Mesh(geometry, material);
         globeGroup.add(globe);
 
-        var rimGeo = new THREE.SphereGeometry(GLOBE_R + 0.035, 64, 64);
+        var rimGeo = new THREE.SphereGeometry(GLOBE_R + 0.05, 64, 64);
         var rimMat = new THREE.ShaderMaterial({
           vertexShader: [
             "varying vec3 vNormal;",
@@ -137,6 +147,22 @@
         key.position.set(-3, 2, 3);
         scene.add(key);
 
+        // faint static starfield behind the globe — doesn't rotate with it
+        var STAR_COUNT = 220;
+        var starPositions = new Float32Array(STAR_COUNT * 3);
+        for (var si = 0; si < STAR_COUNT; si++) {
+          var r = 6 + Math.random() * 6;
+          var a1 = Math.random() * Math.PI * 2;
+          var a2 = Math.acos(2 * Math.random() - 1);
+          starPositions[si * 3] = r * Math.sin(a2) * Math.cos(a1);
+          starPositions[si * 3 + 1] = r * Math.sin(a2) * Math.sin(a1);
+          starPositions[si * 3 + 2] = -Math.abs(r * Math.cos(a2)) - 2;
+        }
+        var starGeo = new THREE.BufferGeometry();
+        starGeo.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
+        var starMat = new THREE.PointsMaterial({ color: 0xcfc6ad, size: 0.02, transparent: true, opacity: 0.5 });
+        scene.add(new THREE.Points(starGeo, starMat));
+
         // marker sprites
         var dotCanvas = document.createElement("canvas");
         dotCanvas.width = dotCanvas.height = 64;
@@ -151,7 +177,7 @@
 
         var markers = countries.map(function (c) {
           var ll = toLatLon(c);
-          var pos = latLonToVector3(ll.lat, ll.lon, GLOBE_R + 0.015);
+          var pos = latLonToVector3(ll.lat, ll.lon, GLOBE_R + 0.02);
           var sprite = new THREE.Sprite(new THREE.SpriteMaterial({
             map: dotTexture,
             color: 0xe3c785,
@@ -178,40 +204,39 @@
           globeGroup.rotation.y = -Math.atan2(p0.x, p0.z);
         }
 
-        // swap the flat map for the live canvas only once everything above
-        // succeeded and the texture is actually ready to paint
-        footprint.querySelectorAll(".footprint__map, .footprint__marker").forEach(function (el) {
-          el.style.display = "none";
-        });
-        renderer.domElement.style.position = "absolute";
-        renderer.domElement.style.inset = "0";
-        renderer.domElement.style.width = "100%";
-        renderer.domElement.style.height = "100%";
-        footprint.style.pointerEvents = "auto";
-        footprint.insertBefore(renderer.domElement, footprint.firstChild);
+        // swap the flat circular map for the live canvas only once everything
+        // above succeeded and the texture is actually ready to paint
+        footprint.style.display = "none";
+        layer.appendChild(renderer.domElement);
+        if (heroInner) {
+          container.insertBefore(layer, heroInner);
+        } else {
+          container.appendChild(layer);
+        }
 
         var tooltip = document.createElement("div");
         tooltip.className = "footprint__globe-tooltip";
-        footprint.parentNode.style.position = footprint.parentNode.style.position || "relative";
-        footprint.appendChild(tooltip);
+        layer.appendChild(tooltip);
 
         var raycaster = new THREE.Raycaster();
         var pointerNDC = new THREE.Vector2();
         var hovered = null;
 
         function resize() {
-          var rect = footprint.getBoundingClientRect();
-          renderer.setSize(rect.width, rect.height, false);
+          var r = container.getBoundingClientRect();
+          camera.aspect = r.width / Math.max(r.height, 1);
+          camera.updateProjectionMatrix();
+          renderer.setSize(r.width, r.height);
         }
         resize();
         window.addEventListener("resize", resize);
 
-        footprint.addEventListener("pointermove", function (evt) {
-          var rect = footprint.getBoundingClientRect();
-          var x = evt.clientX - rect.left;
-          var y = evt.clientY - rect.top;
-          pointerNDC.x = (x / rect.width) * 2 - 1;
-          pointerNDC.y = -(y / rect.height) * 2 + 1;
+        layer.addEventListener("pointermove", function (evt) {
+          var r = container.getBoundingClientRect();
+          var x = evt.clientX - r.left;
+          var y = evt.clientY - r.top;
+          pointerNDC.x = (x / r.width) * 2 - 1;
+          pointerNDC.y = -(y / r.height) * 2 + 1;
           raycaster.setFromCamera(pointerNDC, camera);
           var hits = raycaster.intersectObjects(markers, false);
           if (hits.length) {
@@ -225,7 +250,7 @@
             tooltip.classList.remove("is-visible");
           }
         });
-        footprint.addEventListener("pointerleave", function () {
+        layer.addEventListener("pointerleave", function () {
           hovered = null;
           tooltip.classList.remove("is-visible");
         });
