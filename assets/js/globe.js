@@ -128,7 +128,10 @@
         // one side like backlit atmosphere, instead of a uniform ring
         var rimGeo = new THREE.SphereGeometry(GLOBE_R + 0.06, 64, 64);
         var rimMat = new THREE.ShaderMaterial({
-          uniforms: { lightDir: { value: new THREE.Vector3(-0.6, 0.55, 0.4).normalize() } },
+          uniforms: {
+            topColor: { value: new THREE.Color(0xf3a44e) },
+            bottomColor: { value: new THREE.Color(0x8c5a1e) }
+          },
           vertexShader: [
             "varying vec3 vNormal;",
             "void main() {",
@@ -138,12 +141,12 @@
           ].join("\n"),
           fragmentShader: [
             "varying vec3 vNormal;",
-            "uniform vec3 lightDir;",
+            "uniform vec3 topColor;",
+            "uniform vec3 bottomColor;",
             "void main() {",
             "  float fresnel = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.4);",
-            "  float directional = max(dot(vNormal, lightDir), 0.0);",
-            "  float intensity = fresnel * mix(0.22, 1.0, directional);",
-            "  gl_FragColor = vec4(0.95, 0.58, 0.22, 1.0) * intensity;",
+            "  vec3 rimColor = mix(bottomColor, topColor, smoothstep(-0.6, 0.9, vNormal.y));",
+            "  gl_FragColor = vec4(rimColor, 1.0) * fresnel;",
             "}"
           ].join("\n"),
           blending: THREE.AdditiveBlending,
@@ -175,17 +178,24 @@
         var starMat = new THREE.PointsMaterial({ color: 0xcfc6ad, size: 0.02, transparent: true, opacity: 0.5 });
         scene.add(new THREE.Points(starGeo, starMat));
 
-        // marker sprites
+        // marker sprites — a crisp solid dot with a thin halo, not a soft
+        // blurred blob
         var dotCanvas = document.createElement("canvas");
         dotCanvas.width = dotCanvas.height = 64;
         var dctx = dotCanvas.getContext("2d");
         var grad = dctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-        grad.addColorStop(0, "rgba(255,244,214,1)");
-        grad.addColorStop(0.35, "rgba(227,199,133,0.9)");
+        grad.addColorStop(0, "rgba(255,248,228,1)");
+        grad.addColorStop(0.22, "rgba(255,248,228,1)");
+        grad.addColorStop(0.32, "rgba(227,199,133,0.95)");
+        grad.addColorStop(0.55, "rgba(227,199,133,0.28)");
         grad.addColorStop(1, "rgba(227,199,133,0)");
         dctx.fillStyle = grad;
         dctx.fillRect(0, 0, 64, 64);
         var dotTexture = new THREE.CanvasTexture(dotCanvas);
+
+        // persistent floating labels only for the primary markets, echoing
+        // the reference's always-on country tags instead of hover-only
+        var LABELED_TIERS = { lg: true, md: true };
 
         var markers = countries.map(function (c) {
           var ll = toLatLon(c);
@@ -197,9 +207,17 @@
             depthWrite: false
           }));
           sprite.position.copy(pos);
-          var base = TIER_SIZE[c.tier];
+          var base = TIER_SIZE[c.tier] * 0.8;
           sprite.scale.set(base, base, 1);
           sprite.userData = { label: c.label, baseScale: base, phase: c.phase };
+
+          if (LABELED_TIERS[c.tier]) {
+            var tag = document.createElement("div");
+            tag.className = "footprint__globe-tag";
+            tag.textContent = c.label.split(" — ")[0].split(" (")[0];
+            sprite.userData.tag = tag;
+          }
+
           globeGroup.add(sprite);
           return sprite;
         });
@@ -286,6 +304,10 @@
         tooltip.className = "footprint__globe-tooltip";
         layer.appendChild(tooltip);
 
+        markers.forEach(function (m) {
+          if (m.userData.tag) layer.appendChild(m.userData.tag);
+        });
+
         var raycaster = new THREE.Raycaster();
         var pointerNDC = new THREE.Vector2();
         var hovered = null;
@@ -323,15 +345,33 @@
           tooltip.classList.remove("is-visible");
         });
 
+        var tagProjected = new THREE.Vector3();
+        var tagRect;
+
         var clock = new THREE.Clock();
         function animate() {
           requestAnimationFrame(animate);
           var t = clock.getElapsedTime();
           globeGroup.rotation.y += 0.0011;
+          tagRect = container.getBoundingClientRect();
           markers.forEach(function (m) {
             var pulse = 1 + 0.16 * Math.sin(t * 2 + m.userData.phase);
             var s = m.userData.baseScale * (m === hovered ? 1.35 : pulse);
             m.scale.set(s, s, 1);
+
+            if (m.userData.tag) {
+              var dir = m.position.clone().normalize();
+              var rotatedZ = -dir.x * Math.sin(globeGroup.rotation.y) + dir.z * Math.cos(globeGroup.rotation.y);
+              if (rotatedZ > 0.08) {
+                tagProjected.copy(m.getWorldPosition(new THREE.Vector3())).project(camera);
+                var tx = (tagProjected.x * 0.5 + 0.5) * tagRect.width;
+                var ty = (-tagProjected.y * 0.5 + 0.5) * tagRect.height;
+                m.userData.tag.style.transform = "translate(" + tx.toFixed(1) + "px, " + ty.toFixed(1) + "px) translate(-50%, calc(-100% - 10px))";
+                m.userData.tag.classList.add("is-visible");
+              } else {
+                m.userData.tag.classList.remove("is-visible");
+              }
+            }
           });
           pulses.forEach(function (p) {
             var ct = (t * p.speed + p.offset) % 1;
