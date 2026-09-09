@@ -724,13 +724,24 @@ p {
   opacity: 1;
 }
 
+.footprint__globe-tag::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 1px;
+  height: 10px;
+  background: rgba(227, 199, 133, 0.55);
+  transform: translateX(-50%);
+}
+
 .hero__globe-glow {
   position: absolute;
   top: 8%;
   right: -6%;
   width: 62%;
   height: 84%;
-  background: radial-gradient(circle at 68% 30%, rgba(227, 199, 133, 0.22), transparent 62%);
+  background: radial-gradient(circle at 68% 30%, rgba(227, 199, 133, 0.32), transparent 68%);
   pointer-events: none;
   z-index: -1;
 }

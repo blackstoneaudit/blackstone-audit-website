@@ -115,7 +115,7 @@
           map: mapTex,
           emissive: new THREE.Color(0xc9a24b),
           emissiveMap: mapTex,
-          emissiveIntensity: 0.32,
+          emissiveIntensity: 0.48,
           color: new THREE.Color(0x0c0904),
           roughness: 0.9,
           metalness: 0.05
@@ -123,39 +123,45 @@
         var globe = new THREE.Mesh(geometry, material);
         globeGroup.add(globe);
 
-        // atmosphere glow — a separate, non-rotating shell (a rotating rim
-        // would spin the directional "sunrise" bias with it) biased toward
-        // one side like backlit atmosphere, instead of a uniform ring
-        var rimGeo = new THREE.SphereGeometry(GLOBE_R + 0.06, 64, 64);
-        var rimMat = new THREE.ShaderMaterial({
-          uniforms: {
-            topColor: { value: new THREE.Color(0xf3a44e) },
-            bottomColor: { value: new THREE.Color(0x8c5a1e) }
-          },
-          vertexShader: [
-            "varying vec3 vNormal;",
-            "void main() {",
-            "  vNormal = normalize(normalMatrix * normal);",
-            "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
-            "}"
-          ].join("\n"),
-          fragmentShader: [
-            "varying vec3 vNormal;",
-            "uniform vec3 topColor;",
-            "uniform vec3 bottomColor;",
-            "void main() {",
-            "  float fresnel = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.4);",
-            "  vec3 rimColor = mix(bottomColor, topColor, smoothstep(-0.6, 0.9, vNormal.y));",
-            "  gl_FragColor = vec4(rimColor, 1.0) * fresnel;",
-            "}"
-          ].join("\n"),
-          blending: THREE.AdditiveBlending,
-          side: THREE.BackSide,
-          transparent: true
-        });
-        var rim = new THREE.Mesh(rimGeo, rimMat);
-        rim.position.copy(GLOBE_POS);
-        scene.add(rim);
+        // atmosphere glow — two non-rotating shells (a rotating rim would
+        // spin the top/bottom bias with it): a tight bright core plus a
+        // larger, softer halo layered behind it to fake a bloom pass
+        function makeRimMesh(radiusPad, fresnelPow, opacity) {
+          var geo = new THREE.SphereGeometry(GLOBE_R + radiusPad, 64, 64);
+          var mat = new THREE.ShaderMaterial({
+            uniforms: {
+              topColor: { value: new THREE.Color(0xf6b05e) },
+              bottomColor: { value: new THREE.Color(0x8c5a1e) },
+              uOpacity: { value: opacity }
+            },
+            vertexShader: [
+              "varying vec3 vNormal;",
+              "void main() {",
+              "  vNormal = normalize(normalMatrix * normal);",
+              "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+              "}"
+            ].join("\n"),
+            fragmentShader: [
+              "varying vec3 vNormal;",
+              "uniform vec3 topColor;",
+              "uniform vec3 bottomColor;",
+              "uniform float uOpacity;",
+              "void main() {",
+              "  float fresnel = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), " + fresnelPow.toFixed(1) + ");",
+              "  vec3 rimColor = mix(bottomColor, topColor, smoothstep(-0.6, 0.9, vNormal.y));",
+              "  gl_FragColor = vec4(rimColor, 1.0) * fresnel * uOpacity;",
+              "}"
+            ].join("\n"),
+            blending: THREE.AdditiveBlending,
+            side: THREE.BackSide,
+            transparent: true
+          });
+          var mesh = new THREE.Mesh(geo, mat);
+          mesh.position.copy(GLOBE_POS);
+          return mesh;
+        }
+        scene.add(makeRimMesh(0.06, 2.4, 1.0));
+        scene.add(makeRimMesh(0.22, 1.4, 0.45));
 
         scene.add(new THREE.AmbientLight(0x2c2210, 1));
         var key = new THREE.DirectionalLight(0xe3c785, 0.9);
