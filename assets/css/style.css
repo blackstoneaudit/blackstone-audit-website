@@ -1423,6 +1423,21 @@ a.resource-cell:hover::before {
   gap: 4px 32px;
 }
 
+/* Full-width sub-heading row inside a two-column standards-list */
+.standards-sublabel {
+  grid-column: 1 / -1;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-gold-dark);
+  padding: 14px 4px 6px;
+}
+
+.standards-list > .standards-sublabel:first-child {
+  padding-top: 0;
+}
+
 .standard-link {
   display: flex;
   align-items: baseline;
