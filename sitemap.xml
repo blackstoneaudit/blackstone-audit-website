@@ -246,4 +246,97 @@
     <priority>0.7</priority>
   </url>
 
+
+  <url>
+    <loc>https://blackstone-audit.com/banks.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/banks.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/banks.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/banks.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/en/banks.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/banks.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/banks.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/banks.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/uz/banks.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/banks.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/banks.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/banks.html"/>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://blackstone-audit.com/double-taxation-treaties.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/double-taxation-treaties.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/double-taxation-treaties.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/double-taxation-treaties.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/en/double-taxation-treaties.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/double-taxation-treaties.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/double-taxation-treaties.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/double-taxation-treaties.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/uz/double-taxation-treaties.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/double-taxation-treaties.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/double-taxation-treaties.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/double-taxation-treaties.html"/>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://blackstone-audit.com/ifrs-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/ifrs-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/ifrs-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/ifrs-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/en/ifrs-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/ifrs-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/ifrs-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/ifrs-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/uz/ifrs-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/ifrs-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/ifrs-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/ifrs-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://blackstone-audit.com/local-audit-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/local-audit-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/local-audit-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/local-audit-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/en/local-audit-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/local-audit-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/local-audit-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/local-audit-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://blackstone-audit.com/uz/local-audit-standards.html</loc>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://blackstone-audit.com/local-audit-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://blackstone-audit.com/en/local-audit-standards.html"/>
+    <xhtml:link rel="alternate" hreflang="uz" href="https://blackstone-audit.com/uz/local-audit-standards.html"/>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://blackstone-audit.com/local-accounting-standards.html</loc>
+    <priority>0.4</priority>
+  </url>
 </urlset>
